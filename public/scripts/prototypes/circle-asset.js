@@ -2,7 +2,7 @@
 // MOUSE ASSET //
 /////////////////
 var CircleAsset = function (x, y, r) {
-	this.radio = r || 5;
+	this.radius = r || 5;
 	this.posX = x || 0;
 	this.posY = y || 0;
 
@@ -13,13 +13,13 @@ var CircleAsset = function (x, y, r) {
 	limitPosition = function (x, y, canvas) {
 		// we need to check all cases, if else NOT possible
  		if( x < 0 ){
-			self.posX = self.radio;
+			self.posX = self.radius;
 		} if ( y > canvas.h ) {
-			self.posY = canvas.h - self.radio;
+			self.posY = canvas.h - self.radius;
 		} if ( x > canvas.w ) {
-			self.posX = canvas.w - self.radio;
+			self.posX = canvas.w - self.radius;
 		} if ( y < 0 ) {
-			self.posY = self.radio;
+			self.posY = self.radius;
 		}
 	};
 
@@ -38,12 +38,17 @@ var CircleAsset = function (x, y, r) {
 CircleAsset.prototype.strokeArc = function(ctx, color, initArc, endArc){
 	ctx.strokeStyle = color;
 	ctx.beginPath();
-	ctx.arc(this.posX, this.posY, this.radio, initArc, endArc, true);
+	ctx.arc(this.posX, this.posY, this.radius, initArc, endArc, true);
 	ctx.stroke();
 }
 
 CircleAsset.prototype.distanceToTarget = function (target) {
+	// we got XY position, throw 'Pitagoras' we can calculate the Hipotenuse  
 	if( !!target ){
-
+		var	dx = this.posX - target.posX,
+				dy = this.posY - target.posY,
+				// raiz cuadrada de la suma de los cuadrados de los catetos (ddiferencia en XY)
+				distance = Math.sqrt(dx*dx + dy*dy) - (this.radius + target.radius);
+		return distance;
 	}
 };
