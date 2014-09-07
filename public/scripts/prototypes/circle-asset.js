@@ -6,11 +6,12 @@ var CircleAsset = function (x, y, r) {
 	this.posX = x || 0;
 	this.posY = y || 0;
 
-	var self = this;
-	var limitPossition = function (x, y, canvas) {
-
-		// limit mouse position by canvas
-		// we need to check all cases, no if ele possible
+	// target to context circle constructor
+	var self = this,
+	
+	// limit mouse position by canvas
+	limitPosition = function (x, y, canvas) {
+		// we need to check all cases, if else NOT possible
  		if( x < 0 ){
 			self.posX = self.radio;
 		} if ( y > canvas.h ) {
@@ -22,12 +23,16 @@ var CircleAsset = function (x, y, r) {
 		}
 	};
 
-	this.setPossition = function (x, y) {
+	this.movePosition = function (x, y) {
 		this.posX = x;
 		this.posY = y;
-		limitPossition(x, y, GAME.canvas);
+		limitPosition(x, y, GAME.canvas);
 	};
 
+	this.setPosition = function (x, y) {
+		this.posX = x;
+		this.posY = y;
+	};
 };
 
 CircleAsset.prototype.strokeArc = function(ctx, color, initArc, endArc){
@@ -36,3 +41,9 @@ CircleAsset.prototype.strokeArc = function(ctx, color, initArc, endArc){
 	ctx.arc(this.posX, this.posY, this.radio, initArc, endArc, true);
 	ctx.stroke();
 }
+
+CircleAsset.prototype.distanceToTarget = function (target) {
+	if( !!target ){
+
+	}
+};
