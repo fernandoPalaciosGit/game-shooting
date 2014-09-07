@@ -30,10 +30,7 @@ var paintCanvas = function(ctx){
 	ctx.fillRect(0, 0, GAME.canvas.w, GAME.canvas.h);
 
 	// draw circle moved by mouse
-	ctx.strokeStyle = '#0f0';
-	ctx.beginPath();
-	ctx.arc(GAME.mouse.posX, GAME.mouse.posY, GAME.mouse.radio, 0, Math.PI*2, true);
-	ctx.stroke();
+	GAME.mouse.strokeArc(ctx, '#0f0', 0, Math.PI*2);
 };
 
 var run = function (){

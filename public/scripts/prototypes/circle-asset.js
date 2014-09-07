@@ -6,12 +6,6 @@ var CircleAsset = function (x, y, r) {
 	this.posX = x || 0;
 	this.posY = y || 0;
 
-	this.setPossition = function (x, y) {
-		this.posX = x;
-		this.posY = y;
-		limitPossition(x, y, GAME.canvas);
-	};
-
 	var self = this;
 	var limitPossition = function (x, y, canvas) {
 
@@ -27,4 +21,18 @@ var CircleAsset = function (x, y, r) {
 			self.posY = self.radio;
 		}
 	};
+
+	this.setPossition = function (x, y) {
+		this.posX = x;
+		this.posY = y;
+		limitPossition(x, y, GAME.canvas);
+	};
+
 };
+
+CircleAsset.prototype.strokeArc = function(ctx, color, initArc, endArc){
+	ctx.strokeStyle = color;
+	ctx.beginPath();
+	ctx.arc(this.posX, this.posY, this.radio, initArc, endArc, true);
+	ctx.stroke();
+}
