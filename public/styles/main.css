@@ -1,9 +1,17 @@
+html{
+	background-color: #000;
+}
 .canvasSection{
 	margin: 0 auto;
 	text-align: center;
 }
 .canvasSection canvas{
+	position: relative;
 	width: 500px;
 	height: 300px;
-	border: 5px solid red;
+	box-sizing: border-box;
+	box-shadow: 0px 0px 5px #FFF, 0px 0px 20px #FFF, 0px 0px 25px #FFF;
+	border-radius: 10px/10px;
+	/*background-color: blue;*/
+	z-index: 10;
 }

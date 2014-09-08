@@ -10,14 +10,14 @@ var CircleAsset = function (x, y, r) {
 	var self = this,
 	
 	// limit mouse position by canvas
-	limitPosition = function (x, y, canvas) {
+	limitPosition = function (x, y, domCanvas) {
 		// we need to check all cases, if else NOT possible
  		if( x < 0 ){
 			self.posX = self.radius;
-		} if ( y > canvas.h ) {
-			self.posY = canvas.h - self.radius;
-		} if ( x > canvas.w ) {
-			self.posX = canvas.w - self.radius;
+		} if ( y > domCanvas.height ) {
+			self.posY = domCanvas.height - self.radius;
+		} if ( x > domCanvas.width ) {
+			self.posX = domCanvas.width - self.radius;
 		} if ( y < 0 ) {
 			self.posY = self.radius;
 		}
@@ -26,7 +26,7 @@ var CircleAsset = function (x, y, r) {
 	this.movePosition = function (x, y) {
 		this.posX = x;
 		this.posY = y;
-		limitPosition(x, y, GAME.canvas);
+		limitPosition(x, y, GAME.canvas.dom);
 	};
 
 	this.setPosition = function (x, y) {
