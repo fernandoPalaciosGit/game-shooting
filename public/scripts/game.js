@@ -15,7 +15,8 @@ var init = function ( evLoad ) {
 		GAME.player.sight.movePosition(offsetXMouse, offsetYMouse);
 	}, false);
 	
-	// init render canvas
+	// load the sight nd target scene
+	loadScene(GAME.scenes.shootTheTarget);
 	run();
 	repaint();
 };
@@ -29,45 +30,27 @@ var GAME = {
 	player: {
 		sight: new CircleAsset(0, 0, 20),
 		target: new CircleAsset(50, 50, 20)
+	},
+	scenes: {
+		shootTheTarget: new Scene()
 	}
 };
 
-var moveAsset = function(){
-	// center target
-	GAME.player.target.setPosition(GAME.canvas.dom.width/2, GAME.canvas.dom.height/2);
-};
-
-var paintCanvas = function(ctx){
-	// draw canvas background
-	ctx.fillStyle = GAME.canvas.bgColor;
-	ctx.fillRect(0, 0, GAME.canvas.dom.width, GAME.canvas.dom.height);
-	
-	// draw circle moved by mouse0
-	GAME.player.sight.strokeArc(ctx, '#0f0', 0, Math.PI*2);
-	GAME.player.target.strokeArc(ctx, '#f00', 0, Math.PI*2);
-
-	// show distance to target
-	ctx.fillStyle = '#fff';
-	var distance = GAME.player.sight.distanceToTarget( GAME.player.target );
-	if( distance < 0 ){
-		distance = 'collision';
-		GAME.canvas.bgColor = '#333';
-	} else {
-		distance = distance.toFixed(1); 
-		GAME.canvas.bgColor = '#000';
-	}
-	ctx.fillText(	'Distance to target: '+ distance, 10, 10 );
+// set the current Scene
+var loadScene = function (sn){
+	Scene.currentScene = sn.id;
+	Scene.addScenes[ Scene.currentScene ].load(); // sn.load()
 };
 
 var run = function (){
 	window.setTimeout(run, 1000/50); //frames por segundo
-	moveAsset();	
+	Scene.addScenes[ Scene.currentScene ].act();
 };
 
 var repaint = function (){
 	requestAnimFrame(repaint);
 	resizeBuffer(GAME.canvas.dom, GAME.canvas.ctx);
-	paintCanvas(GAME.canvas.ctx);
+	Scene.addScenes[ Scene.currentScene ].paint(GAME.canvas.ctx);
 };
 
 document.addEventListener('DOMContentLoaded', init, false);
