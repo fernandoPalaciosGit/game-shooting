@@ -33,7 +33,17 @@ var CircleAsset = function (x, y, r) {
 		this.posX = x;
 		this.posY = y;
 	};
+
+	this.setRandomPosition = function ( domCanvas ) {
+		this.setPosition(	random(domCanvas.width/10-1)*10 + this.radius,
+								random(domCanvas.height/10-1)*10 + this.radius );
+	};
 };
+
+CircleAsset.prototype.isOutSide = function (domCanvas){
+ 	return ( this.posX < 0 || this.posY > domCanvas.height ||
+ 				this.posX > domCanvas.width || this.posY < 0 );
+}
 
 CircleAsset.prototype.strokeArc = function(ctx, color, initArc, endArc){
 	ctx.strokeStyle = color;

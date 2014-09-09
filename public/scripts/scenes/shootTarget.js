@@ -19,12 +19,17 @@
 			bgColor = '#333'; 
 			if ( sight.distanceToTarget( target ) < 0 ) {
 				GAME.score++;
-				target.setPosition(	random(domCanvas.width/10-1)*10+target.radius,
-											random(domCanvas.height/10-1)*10+target.radius );
+				target.setRandomPosition( domCanvas )
 			}
+			// reset status pressing
+			GAME.clicks.lastPress = null ;		
 		}
 
-		GAME.clicks.lastPress = null ;
+		// check ousite placed target (because resized window)
+		if( !!target.isOutSide( domCanvas ) ){
+			target.setRandomPosition( domCanvas )
+		}
+
 		
 	};
 
