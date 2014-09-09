@@ -16,7 +16,7 @@ var init = function ( evLoad ) {
 	}, false);
 
 	// keep track mouse click event
-	document.addEventListener('click', function (evClick){
+	GAME.canvas.dom.addEventListener('mousedown', function (evClick){
 		GAME.clicks.lastPress = evClick.which;
 	}, false);
 
