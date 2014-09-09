@@ -32,3 +32,7 @@ var setCanvasFullScreen = function ( domCanvas ){
 	domCanvas.style.marginLeft =- (domCanvas.width*scale)/2+'px';
 	domCanvas.style.marginTop =- (domCanvas.height*scale)/2+'px';
 };
+
+var random = function (max){
+	return ~~(Math.random()*max);
+}

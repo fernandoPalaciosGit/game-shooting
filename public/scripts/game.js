@@ -14,9 +14,15 @@ var init = function ( evLoad ) {
 
 		GAME.player.sight.movePosition(offsetXMouse, offsetYMouse);
 	}, false);
-	
+
+	// keep track mouse click event
+	document.addEventListener('click', function (evClick){
+		GAME.clicks.lastPress = evClick.which;
+	}, false);
+
 	// load the sight nd target scene
 	loadScene(GAME.scenes.shootTheTarget);
+	
 	run();
 	repaint();
 };
@@ -28,12 +34,21 @@ var GAME = {
 		bgColor: '#000'
 	},
 	player: {
-		sight: new CircleAsset(0, 0, 20),
+		sight: new CircleAsset(0, 0, 10),
 		target: new CircleAsset(50, 50, 20)
 	},
 	scenes: {
 		shootTheTarget: new Scene()
-	}
+	},
+	clicks: {
+		lastPress: null,
+		allowed: {
+			LEFT : 1,
+			CENTER: 2,
+			RIGHT: 3
+		}
+	},
+	score: 0
 };
 
 // set the current Scene
