@@ -37,6 +37,18 @@ var GAME = {
 		sight: new CircleAsset(0, 0, 10),
 		target: new CircleAsset(50, 50, 20)
 	},
+	sound: {
+		shoot: (function(){
+			var sound = new Audio();
+			sound.src = './assets/sounds/shot.mp3';
+			return sound; 
+		}()),
+		deadAlien: (function(){
+			var sound = new Audio();
+			sound.src = './assets/sounds/deadAlien.wav';
+			return sound;
+		}()) 
+	},
 	scenes: {
 		shootTheTarget: new Scene()
 	},

@@ -19,7 +19,10 @@
 			bgColor = '#333'; 
 			if ( sight.distanceToTarget( target ) < 0 ) {
 				GAME.score++;
-				target.setRandomPosition( domCanvas )
+				target.playSound(GAME.sound.deadAlien);
+				target.setRandomPosition( domCanvas );
+			} else {
+				target.playSound(GAME.sound.shoot);
 			}
 			// reset status pressing
 			GAME.clicks.lastPress = null ;		
