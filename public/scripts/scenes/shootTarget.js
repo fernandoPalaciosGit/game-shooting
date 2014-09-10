@@ -42,7 +42,7 @@
 		ctx.fillRect(0, 0, domCanvas.width, domCanvas.height);
 		
 		// draw circle moved by mouse0
-		sight.strokeArc(ctx, '#0f0', 0, Math.PI*2);
+		sight.strokeSight(ctx, '#0f0', 0, Math.PI*2);
 		target.strokeArc(ctx, '#f00', 0, Math.PI*2);
 
 		// calculate distanca to target

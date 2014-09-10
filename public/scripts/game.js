@@ -34,7 +34,7 @@ var GAME = {
 		bgColor: '#000'
 	},
 	player: {
-		sight: new CircleAsset(0, 0, 10),
+		sight: new CircleAsset(0, 0, 7, 2.5),
 		target: new CircleAsset(50, 50, 20)
 	},
 	sound: {

@@ -1,10 +1,11 @@
 /////////////////
 // MOUSE ASSET //
 /////////////////
-var CircleAsset = function (x, y, r) {
+var CircleAsset = function (x, y, r, c) {
 	this.radius = r || 5;
 	this.posX = x || 0;
 	this.posY = y || 0;
+	this.lenCross = c || 0; // lenght on cross sight
 
 	// target to context circle constructor
 	var self = this,
@@ -56,6 +57,33 @@ CircleAsset.prototype.strokeArc = function(ctx, color, initArc, endArc){
 	ctx.arc(this.posX, this.posY, this.radius, initArc, endArc, true);
 	ctx.stroke();
 }
+
+CircleAsset.prototype.strokeSight = function(ctx, color, initArc, endArc){
+	this.strokeArc(ctx, color, initArc, endArc);
+
+	var distToRadio = this.lenCross * this.radius;
+	ctx.moveTo(this.posX - distToRadio, this.posY);
+	ctx.lineTo( this.posX + distToRadio, this.posY);
+
+	ctx.moveTo(this.posX, this.posY - distToRadio );
+	ctx.lineTo( this.posX , this.posY + distToRadio);
+	ctx.stroke();
+}
+
+////////////////////////
+// draw sprite Assets //
+////////////////////////
+CircleAsset.prototype.drawImageArea = function (ctx, sprite, cutPosX, cutPosY, cutWidth, cutHeight, color){
+	// check if the sprite image is loaded
+	if( !!sprite.width ){
+		ctx.drawImage(	sprite,
+					cutPosX, cutPosY, cutWidth, cutHeight,   //cut the sprite image
+					this.posX, this.posY,	//position the image inside the asset
+					this.w, this.h );	//size the cut image in the canvas
+	} else {
+		this.fill(ctx, color);
+	}
+};
 
 CircleAsset.prototype.distanceToTarget = function (target) {
 	// we got XY position, throw 'Pitagoras' we can calculate the Hipotenuse  
