@@ -15,6 +15,11 @@ var init = function ( evLoad ) {
 		GAME.player.sight.movePosition(offsetXMouse, offsetYMouse);
 	}, false);
 
+	// find key press position
+	document.addEventListener('keydown', function(evKeyDown){
+		GAME.keys.lastPress = evKeyDown.which || evKeyDown.keyCode;
+	}, false);
+
 	// keep track mouse click event
 	GAME.canvas.dom.addEventListener('mousedown', function (evClick){
 		GAME.clicks.lastPress = evClick.which;
@@ -75,6 +80,13 @@ var GAME = {
 			LEFT : 1,
 			CENTER: 2,
 			RIGHT: 3
+		}
+	},
+	keys: {
+		lastPress: null,
+		allowed: {
+			ENTER: 13,
+			SPACE: 32
 		}
 	},
 	score: 0
