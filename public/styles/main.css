@@ -1,3 +1,13 @@
+/*http://mail.ttfotf.com/font-file/bkcap-regular.font*/
+@font-face{
+   font-family: "BigKeyCaps";
+   src:  local('☺'),
+         url("../fonts/BigKeyCaps.ttf") format("truetype");
+   font-weight: normal;
+   font-style: normal;
+   font-variant: normal;
+}
+/*http://www.dafont.com/invaders-from-space.font*/
 @font-face{
    font-family: "invader";
    src:  local('☺'),
@@ -28,6 +38,23 @@ header h1 {
 	text-transform: capitalize;
 	color : white;
 	font-size: 3.5em;
+}
+span[class^='icon']{
+	color: rgba(0, 0, 0, 0.0);
+}
+span[class^='icon']:after{
+	color: #000;
+	font-weight: bold;
+	font-family: "BigKeyCaps";
+	content: attr(title);
+}
+#instructions{
+	width: 100%;
+	margin: 0 auto;
+	text-align: center;
+}
+.commands {
+	display: inline-flex;
 }
 
 .txt {

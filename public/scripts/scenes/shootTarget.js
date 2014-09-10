@@ -10,7 +10,9 @@
 		// center target
 		var	styleWidth = domCanvas.style.width,
 				styleHeight = domCanvas.style.height;
+
 		target.setPosition( parseInt(styleWidth, 10)/2, parseInt(styleHeight, 10)/2);
+		sight.setPosition( parseInt(styleWidth, 10)/2, parseInt(styleHeight, 10)/2);
 
 		spriteAlien.ramdomY = random(4);
 	};
