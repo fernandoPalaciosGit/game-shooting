@@ -35,7 +35,7 @@ var GAME = {
 	},
 	player: {
 		sight: new CircleAsset(0, 0, 7, 2.5),
-		target: new CircleAsset(50, 50, 20)
+		target: new CircleAsset(0, 0, 20, 0)
 	},
 	sound: {
 		shoot: (function(){
@@ -48,6 +48,23 @@ var GAME = {
 			sound.src = './assets/sounds/deadAlien.wav';
 			return sound;
 		}()) 
+	},
+	sprites: {
+		alien: {
+			asset : ( function(){
+						var sprite = new Image();
+						sprite.onerror = function( evError ){
+							this.src = '';
+							this.onerror = '';
+						};
+					   sprite.src = 'assets/images/yellow_sheet.png';
+					   return sprite;
+					}() ),
+			randomY: 0,
+			randomX: 0,
+			inSight: 960, // sprite position X, to be alien out of target
+			inTarget: 1020 // sprite position X, to be alien in target
+		} 
 	},
 	scenes: {
 		shootTheTarget: new Scene()

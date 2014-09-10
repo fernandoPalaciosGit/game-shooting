@@ -3,23 +3,32 @@
 				target,
 				sight,
 				pressed,
-				click ){
+				click,
+				spriteAlien ){
 
 	GAME.scenes.shootTheTarget.load = function () {
 		// center target
 		var	styleWidth = domCanvas.style.width,
 				styleHeight = domCanvas.style.height;
 		target.setPosition( parseInt(styleWidth, 10)/2, parseInt(styleHeight, 10)/2);
+
+		spriteAlien.ramdomY = random(5);
 	};
 
 	GAME.scenes.shootTheTarget.act = function () {
+		var distanceToTarget = sight.distanceToTarget( target );
+		
+		spriteAlien.randomX = ( distanceToTarget < 0 ) ?
+			spriteAlien.inTarget: spriteAlien.inSight;
+		
 
 		// check the lastPressed click mouse
 		if ( GAME.clicks.lastPress === click.LEFT ) {
 			bgColor = '#333'; 
-			if ( sight.distanceToTarget( target ) < 0 ) {
+			if ( distanceToTarget < 0 ) {
 				GAME.score++;
 				target.playSound(GAME.sound.deadAlien);
+				spriteAlien.ramdomY = random(5); // [random assets position]
 				target.setRandomPosition( domCanvas );
 			} else {
 				target.playSound(GAME.sound.shoot);
@@ -43,7 +52,11 @@
 		
 		// draw circle moved by mouse0
 		sight.strokeSight(ctx, '#0f0', 0, Math.PI*2);
-		target.strokeArc(ctx, '#f00', 0, Math.PI*2);
+		// draw target alien with sprites
+
+		target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset,
+									// position and Dim of sprite alien
+									spriteAlien.randomX, (spriteAlien.ramdomY * 100) + 30, 50, 50);
 
 		// calculate distanca to target
 		var distance = sight.distanceToTarget( target );
@@ -66,4 +79,5 @@
 	GAME.player.target,
 	GAME.player.sight,
 	GAME.clicks.lastPress,
-	GAME.clicks.allowed ));
+	GAME.clicks.allowed,
+	GAME.sprites.alien ));

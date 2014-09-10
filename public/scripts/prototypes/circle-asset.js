@@ -56,7 +56,16 @@ CircleAsset.prototype.strokeArc = function(ctx, color, initArc, endArc){
 	ctx.beginPath();
 	ctx.arc(this.posX, this.posY, this.radius, initArc, endArc, true);
 	ctx.stroke();
-}
+};
+
+CircleAsset.prototype.drawImageArea = function (ctx, sprite, cutPosX, cutPosY, cutWidth, cutHeight){
+	if( !!sprite.width ){
+		ctx.drawImage(	sprite,
+					cutPosX, cutPosY, cutWidth, cutHeight,   //cut the sprite image
+					this.posX-this.radius, this.posY-this.radius,	//position the image inside the asset
+					this.radius*2, this.radius*2 );	//size the cut image in the canvas
+	}
+};
 
 CircleAsset.prototype.strokeSight = function(ctx, color, initArc, endArc){
 	this.strokeArc(ctx, color, initArc, endArc);
@@ -68,21 +77,11 @@ CircleAsset.prototype.strokeSight = function(ctx, color, initArc, endArc){
 	ctx.moveTo(this.posX, this.posY - distToRadio );
 	ctx.lineTo( this.posX , this.posY + distToRadio);
 	ctx.stroke();
-}
+};
 
-////////////////////////
-// draw sprite Assets //
-////////////////////////
-CircleAsset.prototype.drawImageArea = function (ctx, sprite, cutPosX, cutPosY, cutWidth, cutHeight, color){
-	// check if the sprite image is loaded
-	if( !!sprite.width ){
-		ctx.drawImage(	sprite,
-					cutPosX, cutPosY, cutWidth, cutHeight,   //cut the sprite image
-					this.posX, this.posY,	//position the image inside the asset
-					this.w, this.h );	//size the cut image in the canvas
-	} else {
-		this.fill(ctx, color);
-	}
+CircleAsset.prototype.strokeTarget = function (	ctx, color, initArc, endArc, sprite, cutPosX, cutPosY, cutWidth, cutHeight ) {
+	this.strokeArc(ctx, color, initArc, endArc);
+	this.drawImageArea(ctx, sprite, cutPosX, cutPosY, cutWidth, cutHeight);
 };
 
 CircleAsset.prototype.distanceToTarget = function (target) {
