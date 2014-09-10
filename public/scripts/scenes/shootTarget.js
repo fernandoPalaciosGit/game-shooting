@@ -57,16 +57,18 @@
 
 		// calculate distanca to target
 		var distance = sight.distanceToTarget( target );
-
-		// bgColor = ( distance < 0 ) ? '#333' : '#000'; 
 		distance = ( distance < 0 ) ? 'collision' : distance.toFixed(1) ;				
-		
-		ctx.fillStyle = '#000';
-		ctx.font = 'italic 14pt Calibri';
+
+		var	colorBgdTxt = '#6BE',
+				colorFontTxt = '#000';
+
 		// show distance to target
-		ctx.fillText(	'Distance to target: '+ distance, 10, 20 );
+		var txt = 'Distance to target: '+ distance;
+		drawBgdTxt(ctx, txt, '14pt', 10, 20, colorBgdTxt, colorFontTxt);
+
 		// show score
-		ctx.fillText('Score: '+ GAME.score, domCanvas.width - 100, 20);
+		txt = 'Score: '+ GAME.score;
+		drawBgdTxt(ctx, txt, '14pt', domCanvas.width - 100, 20, colorBgdTxt, colorFontTxt);
 		
 		// draw target alien with sprites
 		target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset,
@@ -74,7 +76,7 @@
 									spriteAlien.randomX, (spriteAlien.ramdomY * 100) + 30, 50, 50);
 		
 		// draw circle moved by mouse
-		sight.strokeSight(ctx, '#0f0', 0, Math.PI*2);
+		sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
 
 		// reset canvas background canvas color shot
 		bgColor = '#6687DD';

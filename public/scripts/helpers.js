@@ -36,3 +36,19 @@ var setCanvasFullScreen = function ( domCanvas ){
 var random = function (max){
 	return ~~(Math.random()*max);
 }
+
+var drawBgdTxt = function(ctx, txt, font, posX, posY, colorBgd, colorTxt) {
+    	ctx.font = 'italic '+font+' Calibri';
+    	// draw text from top - makes life easier at the moment
+    	ctx.textBaseline = 'top';
+    	/// color for background
+    	ctx.fillStyle = colorBgd;
+		// get width of text
+		var width = ctx.measureText(txt).width;
+		// draw background rect assuming height of font
+		ctx.fillRect(posX, posY, width, parseInt(font, 10)*2);
+		// text color text
+    	ctx.fillStyle = colorTxt;
+    	// draw text on top
+    	ctx.fillText(txt, posX, posY);
+ };

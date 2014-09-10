@@ -1,13 +1,47 @@
+@font-face{
+   font-family: "invader";
+   src:  local('☺'),
+         url("../fonts/invaders.ttf") format("truetype");
+   font-weight: normal;
+   font-style: normal;
+   font-variant: normal;
+}
 html{
 	background: #6BD none repeat scroll top left;
 }
-h1{
-	text-align: center;
-	font-family: cursive;
-	text-transform: capitalize;
+header {
+	top:50%;
+	left:50%;
+	width:600px;
+	height:50px;
+	position:absolute;
+	text-align:center;
+	/*background-color:black;*/
+	margin: -25px 0 0 -300px;
+}
+header h1 {
+	margin-top : 0;
+	line-height : 50px;
 	letter-spacing: 1px;
 	word-spacing: 10px;
+	font-family: cursive;
+	text-transform: capitalize;
+	color : white;
+	font-size: 3.5em;
 }
+
+.txt {
+	color: hsla(0,0%,0%,0);
+	text-shadow: #fff 0 0 5px;
+}
+
+.invader {
+	font-family: 'invader';
+	margin: 0 10px;
+	color: hsla(0,0%,0%,0);
+	text-shadow: #000 0 0 5px;
+}
+
 ::selection {
   background: rgba(0, 0, 0, 0.0); /* WebKit/Blink Browsers */
 }
