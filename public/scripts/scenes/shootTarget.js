@@ -50,17 +50,10 @@
 
 	GAME.scenes.shootTheTarget.paint = function (ctx) {
 		// draw canvas background
+		ctx.globalAlpha = 0.2;
 		ctx.fillStyle = bgColor;
 		ctx.fillRect(0, 0, domCanvas.width, domCanvas.height);
-		
-
-		// draw target alien with sprites
-		target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset,
-									// position and Dim of sprite alien
-									spriteAlien.randomX, (spriteAlien.ramdomY * 100) + 30, 50, 50);
-		
-		// draw circle moved by mouse0
-		sight.strokeSight(ctx, '#0f0', 0, Math.PI*2);
+		ctx.globalAlpha = 1;
 
 		// calculate distanca to target
 		var distance = sight.distanceToTarget( target );
@@ -68,14 +61,23 @@
 		// bgColor = ( distance < 0 ) ? '#333' : '#000'; 
 		distance = ( distance < 0 ) ? 'collision' : distance.toFixed(1) ;				
 		
-		ctx.fillStyle = '#fff';
+		ctx.fillStyle = '#000';
+		ctx.font = 'italic 14pt Calibri';
 		// show distance to target
-		ctx.fillText(	'Distance to target: '+ distance, 10, 10 );
+		ctx.fillText(	'Distance to target: '+ distance, 10, 20 );
 		// show score
-		ctx.fillText('Score: '+ GAME.score, domCanvas.width - 50, 10);
+		ctx.fillText('Score: '+ GAME.score, domCanvas.width - 100, 20);
+		
+		// draw target alien with sprites
+		target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset,
+									// position and Dim of sprite alien
+									spriteAlien.randomX, (spriteAlien.ramdomY * 100) + 30, 50, 50);
+		
+		// draw circle moved by mouse
+		sight.strokeSight(ctx, '#0f0', 0, Math.PI*2);
 
 		// reset canvas background canvas color shot
-		bgColor = '#000';
+		bgColor = '#6687DD';
 	};
 
 }( GAME.canvas.dom,

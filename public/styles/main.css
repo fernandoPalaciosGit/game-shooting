@@ -1,8 +1,12 @@
 html{
-	background-color: #000;
+	background: #6BD none repeat scroll top left;
 }
 h1{
-	display: none;
+	text-align: center;
+	font-family: cursive;
+	text-transform: capitalize;
+	letter-spacing: 1px;
+	word-spacing: 10px;
 }
 .canvasSection{
 	margin: 0 auto;
