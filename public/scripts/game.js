@@ -24,7 +24,7 @@ var init = function ( evLoad ) {
 	GAME.canvas.dom.addEventListener('mousedown', function (evClick){
 		GAME.clicks.lastPress = evClick.which;
 	}, false);
-
+	
 	// load the sight nd target scene
 	loadScene(GAME.scenes.shootTheTarget);
 	

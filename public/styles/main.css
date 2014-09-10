@@ -8,6 +8,12 @@ h1{
 	letter-spacing: 1px;
 	word-spacing: 10px;
 }
+::selection {
+  background: rgba(0, 0, 0, 0.0); /* WebKit/Blink Browsers */
+}
+::-moz-selection {
+  background: rgba(0, 0, 0, 0.0); /* Gecko Browsers */
+}
 .canvasSection{
 	margin: 0 auto;
 	text-align: center;
