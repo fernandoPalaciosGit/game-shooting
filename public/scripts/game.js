@@ -57,15 +57,24 @@ var GAME = {
 	},
 	sprites: {
 		alien: {
-			asset : ( function(){
-						var sprite = new Image();
-						sprite.onerror = function( evError ){
-							this.src = '';
-							this.onerror = '';
-						};
-					   sprite.src = 'assets/images/yellow_sheet.png';
-					   return sprite;
-					}() ),
+			asset: [ ( function(){
+							var sprite = new Image();
+							sprite.onerror = function( evError ){
+								this.src = '';
+								this.onerror = '';
+							};
+						   sprite.src = 'assets/images/yellow_sheet.png';
+						   return sprite;
+						}() ),
+						( function(){
+							var sprite = new Image();
+							sprite.onerror = function( evError ){
+								this.src = '';
+								this.onerror = '';
+							};
+						   sprite.src = 'assets/images/green_sheet.png';
+						   return sprite;
+						}() ), null ], // third index to choose asset color in stage
 			randomY: 0,
 			randomX: 0,
 			inSight: 960, // sprite position X, to be alien out of target

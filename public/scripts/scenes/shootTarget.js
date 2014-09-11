@@ -12,6 +12,7 @@
 		GAME.counter.time = 10;
 		GAME.scenes.level = 0;
 		GAME.gameover = false;
+		GAME.pause = true;
 
 		// center target
 		var	styleWidth = domCanvas.style.width,
@@ -22,6 +23,9 @@
 
 		// init scene with random alien face
 		spriteAlien.ramdomY = random(4);
+
+		// random sprite Asset
+		spriteAlien.asset[2] = spriteAlien.asset[ random(2) ];
 	};
 
 	// we uses deltatime for sync our counter with the FPS (frames per seconds)
@@ -72,6 +76,7 @@
 				bgColor = '#333'; 
 				if ( distanceToTarget < 0 ) {
 					GAME.score++;
+					spriteAlien.asset[2] = spriteAlien.asset[ random(2) ];
 					target.playSound(GAME.sound.deadAlien);
 					spriteAlien.ramdomY = random(4); // [random assets position]
 					target.setRandomPosition( domCanvas );
@@ -168,7 +173,7 @@
 			drawBgdTxt(ctx, txt, 'left', '14pt', 10, 20, colorBgdTxt, colorFontTxt);
 			
 			// draw target alien with sprites
-			target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset,
+			target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset[2],
 										// position and Dim of sprite alien
 										spriteAlien.randomX, (spriteAlien.ramdomY * 100) + 30, 50, 50);
 			
@@ -186,4 +191,5 @@
 	GAME.player.sight,
 	GAME.clicks.allowed,
 	GAME.keys.allowed,
-	GAME.sprites.alien ));
+	GAME.sprites.alien
+ ));
