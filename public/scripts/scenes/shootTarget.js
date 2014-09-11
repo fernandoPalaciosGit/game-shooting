@@ -9,6 +9,8 @@
 	GAME.scenes.shootTheTarget.load = function () {
 		// reset variables game
 		GAME.score = 0;
+		GAME.counter.time = 10;
+
 		// center target
 		var	styleWidth = domCanvas.style.width,
 				styleHeight = domCanvas.style.height;
@@ -21,36 +23,70 @@
 	};
 
 	GAME.scenes.shootTheTarget.act = function ( countFPS ) {
-		// we uses deltatime for increase our counter sync with the FPS (frames per seconds)
-		GAME.counter.time += countFPS;
 
-		var distanceToTarget = sight.distanceToTarget( target );
+		// we uses deltatime for sync our counter with the FPS (frames per seconds)
+		if( !GAME.pause ){
+			GAME.counter.time -= countFPS;
+
+			var distanceToTarget = sight.distanceToTarget( target );
 		
-		spriteAlien.randomX = ( distanceToTarget < 0 ) ?
-			spriteAlien.inTarget: spriteAlien.inSight;
+			spriteAlien.randomX = ( distanceToTarget < 0 ) ?
+				spriteAlien.inTarget: spriteAlien.inSight;
 
-		// check the lastPressed click mouse, or key space pressed
-		if (	GAME.keys.lastPress === press.SPACE ||
-				GAME.clicks.lastPress === click.LEFT ) {
+			// check the lastPressed click mouse, or key space pressed
+			if (	GAME.keys.lastPress === press.SPACE ||
+					GAME.clicks.lastPress === click.LEFT ) {
 
-			bgColor = '#333'; 
-			if ( distanceToTarget < 0 ) {
-				GAME.score++;
-				target.playSound(GAME.sound.deadAlien);
-				spriteAlien.ramdomY = random(4); // [random assets position]
-				target.setRandomPosition( domCanvas );
+				bgColor = '#333'; 
+				if ( distanceToTarget < 0 ) {
+					GAME.score++;
+					target.playSound(GAME.sound.deadAlien);
+					spriteAlien.ramdomY = random(4); // [random assets position]
+					target.setRandomPosition( domCanvas );
 
-			} else {
-				target.playSound(GAME.sound.shoot);
+				} else {
+					target.playSound(GAME.sound.shoot);
+				}
+				// reset status pressing and clicking
+				GAME.clicks.lastPress = null;
+				GAME.keys.lastPress = null ;		
 			}
-			// reset status pressing and clicking
-			GAME.clicks.lastPress = null;
-			GAME.keys.lastPress = null ;		
+
+			// check ousite placed target (because resized window)
+			if( !!target.isOutSide( domCanvas ) ){
+				target.setRandomPosition( domCanvas )
+			}
+
+			// stop game actions
+			if (GAME.counter.time <= 0 ){
+				GAME.pause = true;
+				GAME.gameover = true;
+				GAME.counter.time = 0;
+			}
+
+		// the game is paused and conditions for return playing
+		} else if (	GAME.keys.lastPress === press.ENTER ){
+			
+			// counter remaning 10 seconds
+			if( !!GAME.gameover ){
+				GAME.gameover = false;
+				GAME.counter.time = 10;
+				GAME.score = 0;
+
+			// return to game after paused
+			} else {
+				GAME.pause = false;
+				GAME.clicks.lastPress = null;
+				GAME.keys.lastPress = null ;		
+			}
+
 		}
 
-		// check ousite placed target (because resized window)
-		if( !!target.isOutSide( domCanvas ) ){
-			target.setRandomPosition( domCanvas )
+		// paused game with enter keyboard
+		if( GAME.keys.lastPress === press.ENTER ){
+			GAME.pause = true;
+         GAME.clicks.lastPress = null;
+			GAME.keys.lastPress = null ;		
 		}
 
 		
@@ -63,33 +99,51 @@
 		ctx.fillRect(0, 0, domCanvas.width, domCanvas.height);
 		ctx.globalAlpha = 1;
 
-		// calculate distanca to target
-		var distance = sight.distanceToTarget( target );
-		distance = ( distance < 0 ) ? 'collision' : distance.toFixed(1) ;				
-
+				// text info bgdColor
 		var	colorBgdTxt = '#6BE',
-				colorFontTxt = '#000';
+				colorFontTxt = '#000',
+				// show score
+				txt = 'Score: '+ GAME.score;
 
-		// show distance to target
-		var txt = 'Distance to target: '+ distance;
-		drawBgdTxt(ctx, txt, '14pt', 10, 20, colorBgdTxt, colorFontTxt);
-
-		// show score
-		txt = 'Score: '+ GAME.score;
-		drawBgdTxt(ctx, txt, '14pt', domCanvas.width - 100, 20, colorBgdTxt, colorFontTxt);
+		drawBgdTxt(ctx, txt, 'left', '14pt', domCanvas.width-100, 20, colorBgdTxt, colorFontTxt);
 
 		// paint the counter remaining
 		txt = GAME.counter.time.toFixed(1);
-		ctx.textAlign = 'center';
-		drawBgdTxt(ctx, txt, '18pt', domCanvas.width/2, 20, 'rgba(0, 0, 0, 0.0)', colorFontTxt);
-		
-		// draw target alien with sprites
-		target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset,
-									// position and Dim of sprite alien
-									spriteAlien.randomX, (spriteAlien.ramdomY * 100) + 30, 50, 50);
-		
-		// draw circle moved by mouse
-		sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
+		drawBgdTxt(ctx, txt, 'center', '18pt', domCanvas.width/2, 20, 'transparent', colorFontTxt);
+
+		if( !!GAME.pause ){
+			document.querySelector('#instructions').classList.remove('pauseView');
+			document.querySelector('#boxBlur').classList.add('pauseView');
+
+			var	pausePosX = domCanvas.width/2,
+					pausePosY = (domCanvas.height/2) - 100;
+
+			if( !!GAME.gameover ){
+				ctx.fillText('Game over: click enter to reset', pausePosX, pausePosY);
+			} else {
+				ctx.fillText('Paused: click to start', pausePosX, pausePosY);
+			}
+
+		} else {
+			document.querySelector('#boxBlur').classList.remove('pauseView');
+			document.querySelector('#instructions').classList.add('pauseView');
+
+			// calculate distanca to target
+			var distance = sight.distanceToTarget( target );
+			distance = ( distance < 0 ) ? 'collision' : distance.toFixed(1) ;				
+
+			// show distance to target
+			txt = 'Distance to target: '+ distance;
+			drawBgdTxt(ctx, txt, 'left', '14pt', 10, 20, colorBgdTxt, colorFontTxt);
+			
+			// draw target alien with sprites
+			target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset,
+										// position and Dim of sprite alien
+										spriteAlien.randomX, (spriteAlien.ramdomY * 100) + 30, 50, 50);
+			
+			// draw circle moved by mouse
+			sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
+		}
 
 		// reset canvas background
 		bgColor = '#6687DD';

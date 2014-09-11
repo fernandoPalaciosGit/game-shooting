@@ -37,7 +37,8 @@ var random = function (max){
 	return ~~(Math.random()*max);
 }
 
-var drawBgdTxt = function(ctx, txt, font, posX, posY, colorBgd, colorTxt) {
+var drawBgdTxt = function(ctx, txt, align, font, posX, posY, colorBgd, colorTxt) {
+		ctx.textAlign = align;
     	ctx.font = 'italic '+font+' Calibri';
     	// draw text from top - makes life easier at the moment
     	ctx.textBaseline = 'top';

@@ -93,7 +93,9 @@ var GAME = {
 	counter: {
 		time: 0,
 		lastUpdate: 0
-	}
+	},
+	pause: true,
+	gameover: false,
 };
 
 // set the current Scene
