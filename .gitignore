@@ -2,3 +2,4 @@ node_modules
 public/bower_components
 public/assets
 public/fonts
+public/scripts/scenes/dropAlien.js

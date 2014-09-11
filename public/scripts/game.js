@@ -40,17 +40,18 @@ var GAME = {
 	},
 	player: {
 		sight: new CircleAsset(0, 0, 7, 2.5),
-		target: new CircleAsset(0, 0, 20, 0)
+		target: new CircleAsset(0, 0, 20, 0),
+		hole: new CircleAsset(0, 0, 50, 0)
 	},
 	sound: {
 		shoot: (function(){
 			var sound = new Audio();
-			sound.src = './assets/sounds/shot.mp3';
+			// sound.src = './assets/sounds/shot.mp3';
 			return sound; 
 		}()),
 		deadAlien: (function(){
 			var sound = new Audio();
-			sound.src = './assets/sounds/deadAlien.wav';
+			// sound.src = './assets/sounds/deadAlien.wav';
 			return sound;
 		}()) 
 	},
@@ -69,10 +70,12 @@ var GAME = {
 			randomX: 0,
 			inSight: 960, // sprite position X, to be alien out of target
 			inTarget: 1020 // sprite position X, to be alien in target
-		} 
+		}
 	},
 	scenes: {
-		shootTheTarget: new Scene()
+		shootTheTarget: new Scene(),
+		dropTheAlien: new Scene(),
+		level: 0
 	},
 	clicks: {
 		lastPress: null,

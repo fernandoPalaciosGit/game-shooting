@@ -10,6 +10,8 @@
 		// reset variables game
 		GAME.score = 0;
 		GAME.counter.time = 10;
+		GAME.scenes.level = 0;
+		GAME.gameover = false;
 
 		// center target
 		var	styleWidth = domCanvas.style.width,
@@ -22,10 +24,40 @@
 		spriteAlien.ramdomY = random(4);
 	};
 
+	// we uses deltatime for sync our counter with the FPS (frames per seconds)
 	GAME.scenes.shootTheTarget.act = function ( countFPS ) {
 
-		// we uses deltatime for sync our counter with the FPS (frames per seconds)
 		if( !GAME.pause ){
+
+			// CHECK LEVEL UP
+			if( GAME.score !== 0 ){
+				var changeLevel = false;
+
+				// every 5 points, 10 seconds of tiemout recovered
+				switch( GAME.scenes.level ){
+					case 0:
+						if( GAME.score % 5 === 0 ) changeLevel = !changeLevel;
+						break;
+					case 1:
+						if( GAME.score % 10 === 0 ) changeLevel = !changeLevel
+						break;
+					case 2:
+						if( GAME.score % 15 === 0 ) changeLevel = !changeLevel
+						break;
+				}
+			}
+
+			// UP LEVEL and COUNTDOWN
+			if( !!changeLevel ){
+				GAME.counter.time += 5;
+				GAME.scenes.level++;
+			}
+
+			// CHANGE STAGE (20 score)
+			if( GAME.score === 20 || GAME.scenes.level === 4){
+				loadScene( GAME.scenes.dropTheAlien );
+			}
+
 			GAME.counter.time -= countFPS;
 
 			var distanceToTarget = sight.distanceToTarget( target );
@@ -67,11 +99,9 @@
 		// the game is paused and conditions for return playing
 		} else if (	GAME.keys.lastPress === press.ENTER ){
 			
-			// counter remaning 10 seconds
+			// RELOAD STAGE when gameover and press start
 			if( !!GAME.gameover ){
-				GAME.gameover = false;
-				GAME.counter.time = 10;
-				GAME.score = 0;
+				this.load();
 
 			// return to game after paused
 			} else {
@@ -109,7 +139,8 @@
 
 		// paint the counter remaining
 		txt = GAME.counter.time.toFixed(1);
-		drawBgdTxt(ctx, txt, 'center', '18pt', domCanvas.width/2, 20, 'transparent', colorFontTxt);
+		var colorLevelTxt = ( txt <= 2.0 ) ? '#f00' : colorFontTxt;
+		drawBgdTxt(ctx, txt, 'center', '18pt', domCanvas.width/2, 20, 'transparent', colorLevelTxt);
 
 		if( !!GAME.pause ){
 			document.querySelector('#instructions').classList.remove('pauseView');
