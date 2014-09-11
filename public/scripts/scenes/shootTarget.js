@@ -7,6 +7,8 @@
 				spriteAlien ){
 
 	GAME.scenes.shootTheTarget.load = function () {
+		// reset variables game
+		GAME.score = 0;
 		// center target
 		var	styleWidth = domCanvas.style.width,
 				styleHeight = domCanvas.style.height;
@@ -14,10 +16,14 @@
 		target.setPosition( parseInt(styleWidth, 10)/2, parseInt(styleHeight, 10)/2);
 		sight.setPosition( parseInt(styleWidth, 10)/2, parseInt(styleHeight, 10)/2);
 
+		// init scene with random alien face
 		spriteAlien.ramdomY = random(4);
 	};
 
-	GAME.scenes.shootTheTarget.act = function () {
+	GAME.scenes.shootTheTarget.act = function ( countFPS ) {
+		// we uses deltatime for increase our counter sync with the FPS (frames per seconds)
+		GAME.counter.time += countFPS;
+
 		var distanceToTarget = sight.distanceToTarget( target );
 		
 		spriteAlien.randomX = ( distanceToTarget < 0 ) ?
@@ -71,6 +77,12 @@
 		// show score
 		txt = 'Score: '+ GAME.score;
 		drawBgdTxt(ctx, txt, '14pt', domCanvas.width - 100, 20, colorBgdTxt, colorFontTxt);
+
+		// paint the counter remaining
+		ctx.fillStyle = '#000';
+		ctx.textAlign = 'center';
+		ctx.font = '20px arial';
+		ctx.fillText( GAME.counter.time, 150, 100);
 		
 		// draw target alien with sprites
 		target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset,
@@ -80,7 +92,7 @@
 		// draw circle moved by mouse
 		sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
 
-		// reset canvas background canvas color shot
+		// reset canvas background
 		bgColor = '#6687DD';
 	};
 

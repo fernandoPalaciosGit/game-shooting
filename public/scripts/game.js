@@ -89,7 +89,11 @@ var GAME = {
 			SPACE: 32
 		}
 	},
-	score: 0
+	score: 0,
+	counter: {
+		time: 0,
+		lastUpdate: 0
+	}
 };
 
 // set the current Scene
@@ -100,7 +104,18 @@ var loadScene = function (sn){
 
 var run = function (){
 	window.setTimeout(run, 1000/50); //frames por segundo
-	Scene.addScenes[ Scene.currentScene ].act();
+
+	/* deltaTime: milliseconds that have passed since the last frame*/
+	var	now = + new Date,
+			deltaTime = ( now - GAME.counter.lastUpdate) / 1000;
+	// we diverge only miliseconds
+	if ( deltaTime > 1 ) deltaTime = 0;
+
+	// recover time now for use in the next frameset
+	GAME.counter.lastUpdate = now;
+
+	// deltaTime is the fps counter range
+	Scene.addScenes[ Scene.currentScene ].act( deltaTime );
 };
 
 var repaint = function (){
