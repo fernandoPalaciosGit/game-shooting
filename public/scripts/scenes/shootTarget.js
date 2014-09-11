@@ -79,10 +79,9 @@
 		drawBgdTxt(ctx, txt, '14pt', domCanvas.width - 100, 20, colorBgdTxt, colorFontTxt);
 
 		// paint the counter remaining
-		ctx.fillStyle = '#000';
+		txt = GAME.counter.time.toFixed(1);
 		ctx.textAlign = 'center';
-		ctx.font = '20px arial';
-		ctx.fillText( GAME.counter.time, 150, 100);
+		drawBgdTxt(ctx, txt, '18pt', domCanvas.width/2, 20, 'rgba(0, 0, 0, 0.0)', colorFontTxt);
 		
 		// draw target alien with sprites
 		target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset,

@@ -20,14 +20,10 @@ html{
 	background: #6BD none repeat scroll top left;
 }
 header {
-	top:50%;
-	left:50%;
 	width:600px;
 	height:50px;
-	position:absolute;
-	text-align:center;
-	/*background-color:black;*/
 	margin: -25px 0 0 -300px;
+	/*background-color:black;*/
 }
 header h1 {
 	margin-top : 0;
@@ -49,9 +45,18 @@ span[class^='icon']:after{
 	content: attr(title);
 }
 #instructions{
-	width: 100%;
-	margin: 0 auto;
-	text-align: center;
+	width:600px;
+	height:50px;
+	margin: -25px 0 0 -320px;
+}
+.pauseView{
+	display: none !important;
+}
+.centerWrap{	
+	position:absolute;
+	top:50%;
+	left:50%;
+	text-align:center;
 }
 .commands {
 	display: inline-flex;
