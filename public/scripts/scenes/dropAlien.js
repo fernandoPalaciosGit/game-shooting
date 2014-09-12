@@ -1,13 +1,15 @@
 (function(	domCanvas,
 				bgColor,
-				target,
 				sight,
+				target,
 				click,
 				press,
-				spriteAlien ){
+				aliens
+			){
 
 	GAME.scenes.dropTheAlien.load = function () {
 		// reset variables game
+		GAME.score = 0;
 		GAME.counter.time = 10;
 		GAME.scenes.level = 0;
 		GAME.gameover = false;
@@ -15,10 +17,22 @@
 
 		// center the hole to drop the alien
 		var	middleWidth = parseInt(domCanvas.style.width, 10)/2,
-				middleeHeight = parseInt(domCanvas.style.height, 10)/2;				
-		target.setPosition( middleWidth, middleeHeight );
+				middleeHeight = parseInt(domCanvas.style.height, 10)/2;
 
-		// set aliens display random over canvas
+		sight.setPosition( middleWidth, middleeHeight);
+
+		// set 5 aliens display random over canvas
+		aliens.draggables.length = 0; // reset alien draggables
+		for (var i = 0; i < 5; i++) {
+			aliens.draggables.push( new CircleAsset(0, 0, 20, 0) );
+			aliens.draggables[i].setRandomPosition( domCanvas );
+
+			// init scene with random alien face
+			aliens.draggables[i].sprite = aliens.asset[ random(2) ]; // green or yellow asset
+			aliens.draggables[i].randomY = random(4); // tipe of alien
+			aliens.draggables[i].randomX = aliens.inSight; // not in target
+		};
+
 	};
 
 	GAME.scenes.dropTheAlien.act = function ( countFPS ) {
@@ -27,15 +41,21 @@
 		if( !GAME.pause ){
 			GAME.counter.time -= countFPS;
 
+			// INTERACTION ALIENS DRAGGABLES
+			for (var i = 0, len = aliens.draggables.length; i < len; i++) {
+				var distanceToAlien = sight.distanceToTarget( aliens.draggables[i] );
 
-			// check the lastPressed click mouse, or key space pressed
-			if (	GAME.keys.lastPress === press.SPACE ||
-					GAME.clicks.lastPress === click.LEFT ) {
+				aliens.draggables[i].randomX = ( distanceToAlien < 0 ) ?
+					aliens.inTarget: aliens.inSight;
+			};
+
+
+			// interaction game with left click
+			if (	GAME.clicks.lastPress === click.LEFT ) {
 
 
 				// reset status pressing and clicking
 				GAME.clicks.lastPress = null;
-				GAME.keys.lastPress = null ;		
 			}
 
 
@@ -49,11 +69,9 @@
 		// the game is paused and conditions for return playing
 		} else if (	GAME.keys.lastPress === press.ENTER ){
 			
-			// counter remaning 10 seconds
+			// RELOAD STAGE when gameover and press start
 			if( !!GAME.gameover ){
-				GAME.gameover = false;
-				GAME.counter.time = 10;
-				GAME.score = 0;
+				this.load();
 
 			// return to game after paused
 			} else {
@@ -70,7 +88,10 @@
          GAME.clicks.lastPress = null;
 			GAME.keys.lastPress = null ;		
 		}
-		
+
+		// reset all interaction
+		GAME.clicks.lastPress = null;
+		GAME.clicks.lastRelease = null ;
 	};
 
 	GAME.scenes.dropTheAlien.paint = function (ctx) {
@@ -102,7 +123,8 @@
 			if( !!GAME.gameover ){
 				ctx.fillText('Game over: click enter to reset', pausePosX, pausePosY);
 			} else {
-				ctx.fillText('Paused: click to start', pausePosX, pausePosY);
+				ctx.fillText('Reaches 20 points to pass the level', pausePosX, pausePosY);
+				ctx.fillText('Enter to Start', pausePosX, pausePosY + 40);
 			}
 
 		} else {
@@ -110,9 +132,14 @@
 			document.querySelector('#instructions').classList.add('pauseView');
 			
 			// draw target alien with sprites
+			for (var i = 0, len = aliens.draggables.length; i < len; i++) {
+				aliens
+					.draggables[i]
+					.strokeTargetDraggables( ctx, 'rgba(255, 0, 0, 0.0)', 50, 50);
+			};
 
-			
 			// draw pointer moved by mouse
+			sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
 
 		}
 
@@ -122,8 +149,9 @@
 
 }( GAME.canvas.dom,
 	GAME.canvas.bgColor,
-	GAME.player.target,
 	GAME.player.sight,
+	GAME.player.target,
 	GAME.clicks.allowed,
 	GAME.keys.allowed,
-	GAME.sprites.alien ));
+	GAME.sprites.alien
+));

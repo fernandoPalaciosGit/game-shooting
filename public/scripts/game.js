@@ -20,13 +20,20 @@ var init = function ( evLoad ) {
 		GAME.keys.lastPress = evKeyDown.which || evKeyDown.keyCode;
 	}, false);
 
-	// keep track mouse click event
+	// keep track mouseup and mousedown click events 
 	GAME.canvas.dom.addEventListener('mousedown', function (evClick){
-		GAME.clicks.lastPress = evClick.which;
+		GAME.clicks.lastPress = evClick.which || evKeyDown.keyCode ;
 	}, false);
 	
+	// keep tracking mouseiup event click outsite canvas layer
+	// just in case the player release the mouse outside the canvas
+	document.addEventListener('mouseup', function (evClick){
+		GAME.clicks.lastRelease = evClick.which;
+	}, false);
+
 	// load the sight nd target scene
-	loadScene(GAME.scenes.shootTheTarget);
+	// loadScene(GAME.scenes.shootTheTarget);
+	loadScene(GAME.scenes.dropTheAlien);
 	
 	run();
 	repaint();
@@ -46,12 +53,12 @@ var GAME = {
 	sound: {
 		shoot: (function(){
 			var sound = new Audio();
-			// sound.src = './assets/sounds/shot.mp3';
+			sound.src = './assets/sounds/shot.mp3';
 			return sound; 
 		}()),
 		deadAlien: (function(){
 			var sound = new Audio();
-			// sound.src = './assets/sounds/deadAlien.wav';
+			sound.src = './assets/sounds/deadAlien.wav';
 			return sound;
 		}()) 
 	},
@@ -78,7 +85,9 @@ var GAME = {
 			randomY: 0,
 			randomX: 0,
 			inSight: 960, // sprite position X, to be alien out of target
-			inTarget: 1020 // sprite position X, to be alien in target
+			inTarget: 1020, // sprite position X, to be alien in target
+			draggables : [],		// assets draggables in canvas
+			dragging : null		// asset we are now dragging
 		}
 	},
 	scenes: {
@@ -87,7 +96,8 @@ var GAME = {
 		level: 0
 	},
 	clicks: {
-		lastPress: null,
+		lastPress : null,		// when we hold down the mouse
+		lastRelease : null,	// when we drop the mouse
 		allowed: {
 			LEFT : 1,
 			CENTER: 2,

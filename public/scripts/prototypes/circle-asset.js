@@ -79,9 +79,17 @@ CircleAsset.prototype.strokeSight = function(ctx, color, initArc, endArc){
 	ctx.stroke();
 };
 
+// STAGE 1 alien asset target
 CircleAsset.prototype.strokeTarget = function (	ctx, color, initArc, endArc, sprite, cutPosX, cutPosY, cutWidth, cutHeight ) {
 	this.strokeArc(ctx, color, initArc, endArc);
 	this.drawImageArea(ctx, sprite, cutPosX, cutPosY, cutWidth, cutHeight);
+};
+
+// STAGE 2 aliens graggebles target
+CircleAsset.prototype.strokeTargetDraggables = function ( ctx, color, cutWidth, cutHeight ) {
+	this.strokeArc(ctx, color, 0, Math.PI*2 );
+	this.drawImageArea(	ctx, this.sprite, this.randomX, (this.randomY * 100) + 30,
+								cutWidth, cutHeight	);
 };
 
 CircleAsset.prototype.distanceToTarget = function (target) {

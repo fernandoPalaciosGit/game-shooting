@@ -22,7 +22,7 @@
 		sight.setPosition( parseInt(styleWidth, 10)/2, parseInt(styleHeight, 10)/2);
 
 		// init scene with random alien face
-		spriteAlien.ramdomY = random(4);
+		spriteAlien.randomY = random(4);
 
 		// random sprite Asset
 		spriteAlien.asset[2] = spriteAlien.asset[ random(2) ];
@@ -78,7 +78,7 @@
 					GAME.score++;
 					spriteAlien.asset[2] = spriteAlien.asset[ random(2) ];
 					target.playSound(GAME.sound.deadAlien);
-					spriteAlien.ramdomY = random(4); // [random assets position]
+					spriteAlien.randomY = random(4); // [random assets position]
 					target.setRandomPosition( domCanvas );
 
 				} else {
@@ -157,7 +157,8 @@
 			if( !!GAME.gameover ){
 				ctx.fillText('Game over: click enter to reset', pausePosX, pausePosY);
 			} else {
-				ctx.fillText('Paused: click to start', pausePosX, pausePosY);
+				ctx.fillText('Reaches 20 points to pass the level', pausePosX, pausePosY);
+				ctx.fillText('Enter to Start', pausePosX, pausePosY + 40);
 			}
 
 		} else {
@@ -175,7 +176,7 @@
 			// draw target alien with sprites
 			target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset[2],
 										// position and Dim of sprite alien
-										spriteAlien.randomX, (spriteAlien.ramdomY * 100) + 30, 50, 50);
+										spriteAlien.randomX, (spriteAlien.randomY * 100) + 30, 50, 50);
 			
 			// draw circle moved by mouse
 			sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
