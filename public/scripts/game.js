@@ -48,7 +48,7 @@ var GAME = {
 	player: {
 		sight: new CircleAsset(0, 0, 7, 2.5),
 		target: new CircleAsset(0, 0, 20, 0),
-		hole: new CircleAsset(0, 0, 50, 0)
+		hole: new CircleAsset(0, 0, 50, 3.5)
 	},
 	sound: {
 		shoot: (function(){

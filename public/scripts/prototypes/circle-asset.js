@@ -36,8 +36,8 @@ var CircleAsset = function (x, y, r, c) {
 	};
 
 	this.setRandomPosition = function ( domCanvas ) {
-		this.setPosition(	random(domCanvas.width/10-1)*10 + this.radius,
-								random(domCanvas.height/10-1)*10 + this.radius );
+		this.setPosition(	random( parseInt(domCanvas.width, 10) /10-1)*10 + this.radius,
+								random( parseInt(domCanvas.height, 10) / 10-1)*10 + this.radius );
 	};
 };
 
@@ -78,6 +78,17 @@ CircleAsset.prototype.strokeSight = function(ctx, color, initArc, endArc){
 	ctx.lineTo( this.posX , this.posY + distToRadio);
 	ctx.stroke();
 };
+
+CircleAsset.prototype.strokeHole = function(ctx, lineW, lineColor, fillColor){
+	ctx.strokeStyle = lineColor;
+	ctx.fillStyle   = fillColor;
+	ctx.lineWidth   = lineW;
+	ctx.beginPath();
+	ctx.arc(this.posX, this.posY, this.radius, 0, Math.PI*2, true);
+	ctx.fill();
+	ctx.stroke();
+	ctx.lineWidth = 1;	
+}
 
 // STAGE 1 alien asset target
 CircleAsset.prototype.strokeTarget = function (	ctx, color, initArc, endArc, sprite, cutPosX, cutPosY, cutWidth, cutHeight ) {

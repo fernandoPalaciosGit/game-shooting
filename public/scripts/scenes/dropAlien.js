@@ -1,7 +1,7 @@
 (function(	domCanvas,
 				bgColor,
 				sight,
-				target,
+				hole,
 				click,
 				press,
 				aliens
@@ -14,50 +14,42 @@
 		GAME.scenes.level = 0;
 		GAME.gameover = false;
 		GAME.pause = true;
+		GAME.clicks.lastPress = null;
+		GAME.clicks.lastRelease = null;
+		aliens.dragging = null;
 
 		// center the hole to drop the alien
 		var	middleWidth = parseInt(domCanvas.style.width, 10)/2,
 				middleeHeight = parseInt(domCanvas.style.height, 10)/2;
 
 		sight.setPosition( middleWidth, middleeHeight);
+		hole.setPosition( middleWidth, middleeHeight);
 
 		// set 5 aliens display random over canvas
 		aliens.draggables.length = 0; // reset alien draggables
-		for (var i = 0; i < 5; i++) {
+		for (var i = 0; i < 6; i++) {
 			aliens.draggables.push( new CircleAsset(0, 0, 20, 0) );
-			aliens.draggables[i].setRandomPosition( domCanvas );
+			aliens.draggables[i].setRandomPosition( domCanvas.style );
 
 			// init scene with random alien face
-			aliens.draggables[i].sprite = aliens.asset[ random(2) ]; // green or yellow asset
-			aliens.draggables[i].randomY = random(4); // tipe of alien
-			aliens.draggables[i].randomX = aliens.inSight; // not in target
+			aliens.draggables[i].sprite = aliens.asset[ i%2%2 ]; // green or yellow asset
+			aliens.draggables[i].randomY = random(4); // type of alien
+			aliens.draggables[i].randomX = aliens.inSight; // sprite not in target
 		};
 
 	};
 
+	// we uses deltatime for sync our counter with the FPS (frames per seconds)
 	GAME.scenes.dropTheAlien.act = function ( countFPS ) {
 
-		// we uses deltatime for sync our counter with the FPS (frames per seconds)
+		// GAME RUNNING
 		if( !GAME.pause ){
-			GAME.counter.time -= countFPS;
-
-			// INTERACTION ALIENS DRAGGABLES
-			for (var i = 0, len = aliens.draggables.length; i < len; i++) {
-				var distanceToAlien = sight.distanceToTarget( aliens.draggables[i] );
-
-				aliens.draggables[i].randomX = ( distanceToAlien < 0 ) ?
-					aliens.inTarget: aliens.inSight;
-			};
-
-
-			// interaction game with left click
-			if (	GAME.clicks.lastPress === click.LEFT ) {
-
-
-				// reset status pressing and clicking
-				GAME.clicks.lastPress = null;
+			// WIN : all draggable aliens are inside the hole
+			if( aliens.draggables.length === 0 ){
+				alert('Wiiiin');
 			}
 
+			GAME.counter.time -= countFPS;
 
 			// stop game actions
 			if (GAME.counter.time <= 0 ){
@@ -66,7 +58,68 @@
 				GAME.counter.time = 0;
 			}
 
-		// the game is paused and conditions for return playing
+			// INTERACTION ALIENS DRAGGABLES
+			for (var i = 0, len = aliens.draggables.length; i < len; i++) {
+				var alienRender = aliens.draggables[i];
+
+				// the alien dropped into hole
+				if( !!alienRender.intoHole ){
+					if( alienRender.radius <= 0 ){ // remove from alien draggables
+						aliens.draggables.splice(i, 1);
+						len--;
+						continue;
+					}else{ //effect of drop
+						alienRender.radius--;
+					}
+				}
+				// check ousite placed target (because resized window)
+				if( !!alienRender.isOutSide( domCanvas ) ){
+					alienRender.setRandomPosition( domCanvas );
+				}
+
+				var distanceToAlien = sight.distanceToTarget( alienRender );
+
+				// collision alien with player sight
+				if(  distanceToAlien < 0  ){
+					alienRender.randomX = aliens.inTarget;
+					
+					// DRAG ALIEN, the last event was mouseDOWN 
+					if ( 	GAME.clicks.lastPress === click.LEFT  ) {
+						aliens.dragging = i; // select dragging alien
+					}
+
+				// no target yet
+				} else {
+					alienRender.randomX = aliens.inSight; 					
+				}
+			};
+
+			// player is dragging something, change alien coords to mouse position
+			if ( aliens.dragging !== null ) {
+				// HACK: remove all selected: possibility of remain select because bblClicking
+				window.getSelection().removeAllRanges();
+
+				var	alienDrag = aliens.draggables[ aliens.dragging ]; 
+				alienDrag.posX = sight.posX; // move position to mouse
+				alienDrag.posY = sight.posY;
+				if( alienDrag.radius <= 30	) alienDrag.radius++; // effect drag
+				
+				// DROP ALIEN, the last event was mouseup 
+				if (	GAME.clicks.lastRelease === click.LEFT ) {
+					alienDrag.radius = 20; // effect drop
+					aliens.dragging = null;
+
+					// DRAGGING INTO HOLE
+					if( hole.distanceToTarget( alienDrag ) < 0 ){
+						// we cannot do a while becaouse itd too nested, otherwise we marked
+						alienDrag.intoHole = true;
+					}
+
+				}
+			}	
+
+
+		// GAME PAUSED and conditions for return playing
 		} else if (	GAME.keys.lastPress === press.ENTER ){
 			
 			// RELOAD STAGE when gameover and press start
@@ -89,7 +142,7 @@
 			GAME.keys.lastPress = null ;		
 		}
 
-		// reset all interaction
+		// reset all interaction mouse events
 		GAME.clicks.lastPress = null;
 		GAME.clicks.lastRelease = null ;
 	};
@@ -131,6 +184,9 @@
 			document.querySelector('#boxBlur').classList.remove('pauseView');
 			document.querySelector('#instructions').classList.add('pauseView');
 			
+			// draw hole to score game
+			hole.strokeHole(ctx, 10, '#797979', '#000')
+			
 			// draw target alien with sprites
 			for (var i = 0, len = aliens.draggables.length; i < len; i++) {
 				aliens
@@ -140,7 +196,6 @@
 
 			// draw pointer moved by mouse
 			sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
-
 		}
 
 		// reset canvas background
@@ -150,7 +205,7 @@
 }( GAME.canvas.dom,
 	GAME.canvas.bgColor,
 	GAME.player.sight,
-	GAME.player.target,
+	GAME.player.hole,
 	GAME.clicks.allowed,
 	GAME.keys.allowed,
 	GAME.sprites.alien
