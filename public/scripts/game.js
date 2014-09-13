@@ -1,37 +1,17 @@
 var init = function ( evLoad ) {
-	//resize canvas to full screen
+	//FULL SCREEN CANVAS
 	setCanvasFullScreen(GAME.canvas.dom);
-
 	window.onresize = function () {
 		setCanvasFullScreen(GAME.canvas.dom);
 	};
 
-	// find mouse position offset canvas
-	document.addEventListener('mousemove', function(evMove){
-		// mouse pointer position inside canvas is our circle asset position
-		var	offsetXMouse = evMove.pageX - GAME.canvas.dom.offsetLeft,
-				offsetYMouse = evMove.pageY - GAME.canvas.dom.offsetTop;
+	// LOAD PLAYER EVENTS
+	loadDefaulInteraction();
+	// Mobiles action
+	if ( window.mobilecheck() )
+		{ loadMobileInteraction(); }
 
-		GAME.player.sight.movePosition(offsetXMouse, offsetYMouse);
-	}, false);
-
-	// find key press position
-	document.addEventListener('keydown', function(evKeyDown){
-		GAME.keys.lastPress = evKeyDown.which || evKeyDown.keyCode;
-	}, false);
-
-	// keep track mouseup and mousedown click events 
-	GAME.canvas.dom.addEventListener('mousedown', function (evClick){
-		GAME.clicks.lastPress = evClick.which || evKeyDown.keyCode ;
-	}, false);
-	
-	// keep tracking mouseiup event click outsite canvas layer
-	// just in case the player release the mouse outside the canvas
-	document.addEventListener('mouseup', function (evClick){
-		GAME.clicks.lastRelease = evClick.which;
-	}, false);
-
-	// load the sight nd target scene
+	// LOAD FIRST STAGE
 	// loadScene(GAME.scenes.shootTheTarget);
 	loadScene(GAME.scenes.dropTheAlien);
 	
@@ -146,6 +126,51 @@ var repaint = function (){
 	requestAnimFrame(repaint);
 	resizeBuffer(GAME.canvas.dom, GAME.canvas.ctx);
 	Scene.addScenes[ Scene.currentScene ].paint(GAME.canvas.ctx);
+};
+
+var loadDefaulInteraction = function (){
+	// find mouse position offset canvas
+	document.addEventListener('mousemove', function(evMove){
+		var	offsetXMouse = evMove.pageX - GAME.canvas.dom.offsetLeft,
+				offsetYMouse = evMove.pageY - GAME.canvas.dom.offsetTop;
+
+		GAME.player.sight.movePosition(offsetXMouse, offsetYMouse);
+	}, false);
+	
+	// find key press position
+	document.addEventListener('keydown', function(evKeyDown){
+		GAME.keys.lastPress = evKeyDown.which || evKeyDown.keyCode;
+	}, false);
+
+	// avoid dragging alien
+	document.addEventListener('mouseup', function (evClick){
+		GAME.clicks.lastRelease = evClick.which || evClick.keyCode;
+	}, false);
+
+	// keep track mouseup and mousedown click events 
+	GAME.canvas.dom.addEventListener('mousedown', function (evClick){
+		GAME.clicks.lastPress = evClick.which || evClick.keyCode ;
+	}, false);
+};
+
+var loadMobileInteraction = function (){
+	// double click finger pause game
+	$(document).on('doubletap', function(e){
+		GAME.keys.lastPress = 13;
+	});
+
+	// move pointer
+	$(GAME.canvas.dom).on('drag', function(evt){
+      GAME.clicks.lastPress=1;
+      mousex=evt.x-this.offsetLeft;
+      mousey=evt.y-this.offsetTop;
+      GAME.player.sight.movePosition(mousex, mousey);
+	});
+
+	// drop Alien
+	GAME.canvas.dom.addEventListener('touchend',function(evt){
+		GAME.clicks.lastRelease=1;
+	},false);
 };
 
 document.addEventListener('DOMContentLoaded', init, false);

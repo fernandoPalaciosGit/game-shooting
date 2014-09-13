@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>canvas game, shooter controled by mouse</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 	<link rel="stylesheet" href="./bower_components/github-fork-ribbon-css/gh-fork-ribbon.css">
 	<link rel="stylesheet" href="./styles/main.css">
 </head>
@@ -45,14 +46,20 @@
 
 	<aside class="github-fork-ribbon-wrapper left-bottom">
 	  <div class="github-fork-ribbon">
-	      <a href="https://github.com/fernandoPalaciosGit/game-shooting">Fork me on GitHub</a>
+	      <a href="https://github.com/fernandoPalaciosGit/game-shooting/tree/deployHeroku">
+	      	Fork me on GitHub</a>
 	  </div>
 	</aside>
 
+<script src="./scripts/helpers.js"></script>
+<script>
+if ( window.mobilecheck() ) { // mobiles interctions
+	document.write('<script src="bower_components/jquery/jquery.min.js"><\/script><script src="bower_components/jquery.finger/dist/jquery.finger.min.js"><\/script>');
+}
+</script>
 <script src="./scripts/prototypes/scenes.js"></script>
 <script src="./scripts/prototypes/circle-asset.js"></script>
 <script src="./scripts/game.js"></script>
-<script src="./scripts/helpers.js"></script>
 <script src="./scripts/scenes/shootTarget.js"></script>
 <script src="./scripts/scenes/dropAlien.js"></script>
 </body>

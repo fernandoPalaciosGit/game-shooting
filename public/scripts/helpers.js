@@ -53,3 +53,12 @@ var drawBgdTxt = function(ctx, txt, align, font, posX, posY, colorBgd, colorTxt)
     	// draw text on top
     	ctx.fillText(txt, posX, posY);
  };
+ 
+window.mobilecheck = function() {
+	var check = false;
+	(function(a){
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(a) )
+			{check = true;}
+	}(navigator.userAgent||navigator.vendor||window.opera));
+	return check;
+};
