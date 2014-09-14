@@ -131,9 +131,15 @@ CircleAsset.prototype.calcDistCuad = function (target) {
 	}
 };
 
+CircleAsset.prototype.getAngle = function( target ){
+	if( target !== null ){
+		return Math.atan2( this.posY-target.posY, this.posX-target.posX);
+	}
+};
+
 CircleAsset.prototype.angularMove = function( degree, speed ){
-	var rad = toRad(degree);
 	if( speed !== null ){
+		var rad = toRad(degree);
 		this.posX += Math.cos(rad) * speed;
 		this.posY += Math.sin(rad) * speed;
 	}
