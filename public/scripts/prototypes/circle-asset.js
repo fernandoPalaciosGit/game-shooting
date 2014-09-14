@@ -6,6 +6,7 @@ var CircleAsset = function (x, y, r, c) {
 	this.posX = x || 0;
 	this.posY = y || 0;
 	this.lenCross = c || 0; // lenght on cross sight
+	this.bTimer = 0;
 
 	// target to context circle constructor
 	var self = this,

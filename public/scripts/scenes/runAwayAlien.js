@@ -1,28 +1,24 @@
 (function(	domCanvas,
 				bgColor,
-				target,
 				sight,
-				click,
 				press,
 				spriteAlien ){
 
 	GAME.scenes.runAwayAlien.load = function () {
 		// reset variables game
 		GAME.score = 0;
-		GAME.counter.time = 10;
+		GAME.counter.time = 20;
 		GAME.scenes.level = 0;
 		GAME.gameover = false;
-		GAME.pause = true;
+		GAME.pause = true; // timeout to explote bombs
+		GAME.bombTime = 0;
+		GAME.bombs.length = 0;
 
-		// center target
+		// center position
 		var	styleWidth = domCanvas.style.width,
 				styleHeight = domCanvas.style.height;
 
-		target.setPosition( parseInt(styleWidth, 10)/2, parseInt(styleHeight, 10)/2);
 		sight.setPosition( parseInt(styleWidth, 10)/2, parseInt(styleHeight, 10)/2);
-
-		spriteAlien.randomY = random(4);
-		spriteAlien.asset[2] = spriteAlien.asset[ random(2) ];
 	};
 
 	// we uses deltatime for sync our counter with the FPS (frames per seconds)
@@ -30,35 +26,58 @@
 
 		if( !GAME.pause ){
 
+			GAME.counter.time -= countFPS;
 
-			// CHANGE STAGE (20 score)
-			if( GAME.scenes.level === 4){
+			if (GAME.counter.time <= 0 ){
 				GAME.player.winner = true;
 			}
 
-			GAME.counter.time -= countFPS;
-
-			var distanceToTarget = sight.distanceToTarget( target );
-			
-			if( distanceToTarget > 0 ){
-				spriteAlien.randomX = spriteAlien.inSight;
-				var angle = sight.getAngle( target );
-				target.angularMove( angle, countFPS*100 );
-			} else {
-				spriteAlien.randomX = spriteAlien.inTarget;
+			// add a new bomb each 0.5 -> 3 seconsds
+			GAME.bombTime -= countFPS
+			if( GAME.bombTime < 0 ){
+				var newBomb = new CircleAsset(0, 0, 20, 0);
+				newBomb.bTimer = 2;
+				newBomb.setRandomPosition( domCanvas.style );
+				newBomb.sprite = spriteAlien.asset[ GAME.bombs.length%2%2 ]; // green or yellow asset
+				newBomb.randomY = random(4); // type of alien
+				newBomb.randomX = spriteAlien.inSight; // sprite not in target
+				
+				GAME.bombs.push( newBomb );
+				GAME.bombTime = 0.5 + random(2.5);
 			}
 
-			// check the lastPressed click mouse, or key space pressed
-			if (	GAME.keys.lastPress === press.SPACE ||
-					GAME.clicks.lastPress === click.LEFT ) {
-			}
+			for (var i = 0, len = GAME.bombs.length; i < len; i++) {
+				if( GAME.bombs[i].bTimer < 0 ){ // remove alien from bombs assets
+					GAME.bombs.splice(i--, 1);
+					len--;
+					continue; // no more interaction with this alien
+				}
 
-			// stop game actions
-			if (GAME.counter.time <= 0 ){
-				GAME.pause = true;
-				GAME.gameover = true;
-				GAME.counter.time = 0;
-			}
+				GAME.bombs[i].bTimer -= countFPS; // countdown to explote
+
+				var distanceToTarget = sight.distanceToTarget( GAME.bombs[i] );
+				// visual in/out alien target
+				GAME.bombs[i].randomX = ( distanceToTarget < 0 ) ?
+												spriteAlien.inTarget :
+												spriteAlien.inSight;
+				
+				// angular movement, to match the centers
+				if( distanceToTarget > -(sight.radius+GAME.bombs[i].radius) ){
+					var angle = sight.getAngle( GAME.bombs[i] );
+					GAME.bombs[i].angularMove( angle, countFPS*100 );
+				}
+
+				// explote bomb with time left
+				if( GAME.bombs[i].bTimer < 0 ){
+					GAME.bombs[i].radius *= 2; // simulate blast
+					if( GAME.bombs[i].distanceToTarget( sight ) < 0 ){ // GAMEOVER
+						GAME.pause = true;
+						GAME.gameover = true;
+						GAME.counter.time = 0;
+					}
+				}
+			};
+
 
 		// the game is paused and conditions for return playing
 		} else if (	GAME.keys.lastPress === press.ENTER ){
@@ -70,7 +89,6 @@
 			// return to game after paused
 			} else {
 				GAME.pause = false;
-				GAME.clicks.lastPress = null;
 				GAME.keys.lastPress = null ;		
 			}
 
@@ -79,11 +97,9 @@
 		// paused game with enter keyboard
 		if( GAME.keys.lastPress === press.ENTER ){
 			GAME.pause = true;
-         GAME.clicks.lastPress = null;
 			GAME.keys.lastPress = null ;		
 		}
 
-		
 	};
 
 	GAME.scenes.runAwayAlien.paint = function (ctx) {
@@ -124,9 +140,17 @@
 			document.querySelector('#boxBlur').classList.remove('pauseView');
 			document.querySelector('#instructions').classList.add('pauseView');
 
-			// draw target alien with sprites
-			target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset[2],
-										spriteAlien.randomX, (spriteAlien.randomY * 100) + 30, 50, 50);
+			// draw bomb-aliens with sprites
+			for (var i = 0, len = GAME.bombs.length; i < len; i++) {
+				if(	GAME.bombs[i].bTimer > 0 && GAME.bombs[i].bTimer < 1 &&
+						~~(GAME.bombs[i].bTimer*10)%2 == 0 ){
+					GAME	.bombs[i]
+							.strokeTargetDraggables( ctx, 'rgba(255, 0, 0, 0.0)', 5, 5);
+				} else {
+					GAME	.bombs[i]
+							.strokeTargetDraggables( ctx, 'rgba(255, 0, 0, 0.0)', 50, 50);
+				}
+			};
 
 			// draw circle moved by mouse
 			sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
@@ -138,9 +162,7 @@
 
 }( GAME.canvas.dom,
 	GAME.canvas.bgColor,
-	GAME.player.target,
 	GAME.player.sight,
-	GAME.clicks.allowed,
 	GAME.keys.allowed,
 	GAME.sprites.alien
  ));

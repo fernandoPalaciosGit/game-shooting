@@ -31,6 +31,8 @@ var GAME = {
 		hole: new CircleAsset(0, 0, 50, 3.5),
 		winner: false
 	},
+	bombs: [],
+	bombTime: 0, // countdown to create new bomb
 	sound: {
 		shoot: (function(){
 			var sound = new Audio();
