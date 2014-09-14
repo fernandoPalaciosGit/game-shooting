@@ -62,3 +62,8 @@ window.mobilecheck = function() {
 	}(navigator.userAgent||navigator.vendor||window.opera));
 	return check;
 };
+
+// calculate radians according degrees
+var toRad = function ( degree ){
+	return (degree * Math.PI)/180;
+}

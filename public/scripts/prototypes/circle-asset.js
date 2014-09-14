@@ -130,3 +130,11 @@ CircleAsset.prototype.calcDistCuad = function (target) {
 		return 0;
 	}
 };
+
+CircleAsset.prototype.angularMove = function( degree, speed ){
+	var rad = toRad(degree);
+	if( speed !== null ){
+		this.posX += Math.cos(rad) * speed;
+		this.posY += Math.sin(rad) * speed;
+	}
+};
