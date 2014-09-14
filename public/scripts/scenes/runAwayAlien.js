@@ -32,22 +32,24 @@
 				GAME.player.winner = true;
 			}
 
-			// add a new bomb each 0.5 -> 3 seconsds
+			// set and create new aleien bomb : each 0.5 -> 3 seconsds
 			GAME.bombTime -= countFPS
 			if( GAME.bombTime < 0 ){
 				var newBomb = new CircleAsset(0, 0, 20, 0);
-				newBomb.bTimer = 2;
+				newBomb.bTimer = 0.5 + random(2.5);
+				newBomb.speed = 100 + ( random(GAME.score) * 10 );
 				newBomb.setRandomPosition( domCanvas.style );
 				newBomb.sprite = spriteAlien.asset[ GAME.bombs.length%2%2 ]; // green or yellow asset
 				newBomb.randomY = random(4); // type of alien
 				newBomb.randomX = spriteAlien.inSight; // sprite not in target
 				
 				GAME.bombs.push( newBomb );
-				GAME.bombTime = 0.5 + random(2.5);
+				GAME.bombTime = random(2);
 			}
 
 			for (var i = 0, len = GAME.bombs.length; i < len; i++) {
 				if( GAME.bombs[i].bTimer < 0 ){ // remove alien from bombs assets
+					GAME.score++;
 					GAME.bombs.splice(i--, 1);
 					len--;
 					continue; // no more interaction with this alien
@@ -62,9 +64,9 @@
 												spriteAlien.inSight;
 				
 				// angular movement, to match the centers
-				if( distanceToTarget > -(sight.radius+GAME.bombs[i].radius) ){
+				if( distanceToTarget > -(sight.radius + GAME.bombs[i].radius) ){
 					var angle = sight.getAngle( GAME.bombs[i] );
-					GAME.bombs[i].angularMove( angle, countFPS*100 );
+					GAME.bombs[i].angularMove( angle, GAME.bombs[i].speed * countFPS );
 				}
 
 				// explote bomb with time left

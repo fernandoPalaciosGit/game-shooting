@@ -12,8 +12,7 @@ var init = function ( evLoad ) {
 		{ loadMobileInteraction(); }
 
 	// LOAD FIRST STAGE
-	// loadScene(GAME.scenes.shootTheTarget);
-	loadScene(GAME.scenes.runAwayAlien);
+	loadScene(GAME.scenes.shootTheTarget);
 	
 	run();
 	repaint();
@@ -134,7 +133,7 @@ var repaint = function (){
 		resizeBuffer(GAME.canvas.dom, GAME.canvas.ctx);
 		Scene.addScenes[ Scene.currentScene ].paint(GAME.canvas.ctx);
 	} else { //WINNER GAME
-		window.alert('GOTCHA !!! finally we will Dominate the Galaxy');
+		window.alert('GOTCHA !!! Finally we will Dominate the Galaxy');
 		document.location.href = 'https://github.com/fernandoPalaciosGit';
 	}
 };
