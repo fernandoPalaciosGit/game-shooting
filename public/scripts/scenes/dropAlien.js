@@ -64,6 +64,9 @@
 
 				// the alien dropped into hole
 				if( !!alienRender.intoHole ){
+					// center alien into hole
+					alienRender.posX = hole.posX;
+					alienRender.posY = hole.posY;
 					if( alienRender.radius <= 0 ){ // remove from alien draggables
 						aliens.draggables.splice(i, 1);
 						len--;
@@ -161,10 +164,11 @@
 				txt = 'Score: '+ GAME.score;
 
 		drawBgdTxt(ctx, txt, 'left', '14pt', domCanvas.width-100, 20, colorBgdTxt, colorFontTxt);
-
+		
 		// paint the counter remaining
 		txt = GAME.counter.time.toFixed(1);
-		drawBgdTxt(ctx, txt, 'center', '18pt', domCanvas.width/2, 20, 'transparent', colorFontTxt);
+		var colorLevelTxt = ( txt <= 2.0 ) ? '#f00' : colorFontTxt;
+		drawBgdTxt(ctx, txt, 'center', '18pt', domCanvas.width/2, 20, 'transparent', colorLevelTxt);
 
 		if( !!GAME.pause ){
 			document.querySelector('#instructions').classList.remove('pauseView');
