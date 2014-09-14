@@ -139,8 +139,8 @@ CircleAsset.prototype.getAngle = function( target ){
 
 CircleAsset.prototype.angularMove = function( degree, speed ){
 	if( speed !== null ){
-		var rad = toRad(degree);
-		this.posX += Math.cos(rad) * speed;
-		this.posY += Math.sin(rad) * speed;
+		// var rad = toRad(degree);
+		this.posX += Math.cos(degree) * speed;
+		this.posY += Math.sin(degree) * speed;
 	}
 };

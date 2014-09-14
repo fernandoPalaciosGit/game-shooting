@@ -18,8 +18,11 @@
 		var	styleWidth = domCanvas.style.width,
 				styleHeight = domCanvas.style.height;
 
+		target.setPosition( parseInt(styleWidth, 10)/2, parseInt(styleHeight, 10)/2);
 		sight.setPosition( parseInt(styleWidth, 10)/2, parseInt(styleHeight, 10)/2);
 
+		spriteAlien.randomY = random(4);
+		spriteAlien.asset[2] = spriteAlien.asset[ random(2) ];
 	};
 
 	// we uses deltatime for sync our counter with the FPS (frames per seconds)
@@ -34,6 +37,16 @@
 			}
 
 			GAME.counter.time -= countFPS;
+
+			var distanceToTarget = sight.distanceToTarget( target );
+			
+			if( distanceToTarget > 0 ){
+				spriteAlien.randomX = spriteAlien.inSight;
+				var angle = sight.getAngle( target );
+				target.angularMove( angle, countFPS*100 );
+			} else {
+				spriteAlien.randomX = spriteAlien.inTarget;
+			}
 
 			// check the lastPressed click mouse, or key space pressed
 			if (	GAME.keys.lastPress === press.SPACE ||
@@ -110,6 +123,10 @@
 		} else {
 			document.querySelector('#boxBlur').classList.remove('pauseView');
 			document.querySelector('#instructions').classList.add('pauseView');
+
+			// draw target alien with sprites
+			target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset[2],
+										spriteAlien.randomX, (spriteAlien.randomY * 100) + 30, 50, 50);
 
 			// draw circle moved by mouse
 			sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
