@@ -13,7 +13,7 @@ var init = function ( evLoad ) {
 
 	// LOAD FIRST STAGE
 	// loadScene(GAME.scenes.shootTheTarget);
-	loadScene(GAME.scenes.dropTheAlien);
+	loadScene(GAME.scenes.runAwayAlien);
 	
 	run();
 	repaint();
@@ -28,7 +28,8 @@ var GAME = {
 	player: {
 		sight: new CircleAsset(0, 0, 7, 2.5),
 		target: new CircleAsset(0, 0, 20, 0),
-		hole: new CircleAsset(0, 0, 50, 3.5)
+		hole: new CircleAsset(0, 0, 50, 3.5),
+		winner: false
 	},
 	sound: {
 		shoot: (function(){
@@ -73,6 +74,7 @@ var GAME = {
 	scenes: {
 		shootTheTarget: new Scene(),
 		dropTheAlien: new Scene(),
+		runAwayAlien: new Scene(),
 		level: 0
 	},
 	clicks: {
@@ -107,25 +109,32 @@ var loadScene = function (sn){
 };
 
 var run = function (){
-	window.setTimeout(run, 1000/50); //frames por segundo
+	if( !GAME.player.winner ){
+		window.setTimeout(run, 1000/50); //frames por segundo
 
-	/* deltaTime: milliseconds that have passed since the last frame*/
-	var	now = + new Date,
-			deltaTime = ( now - GAME.counter.lastUpdate) / 1000;
-	// we diverge only miliseconds
-	if ( deltaTime > 1 ) deltaTime = 0;
+		/* deltaTime: milliseconds that have passed since the last frame*/
+		var	now = + new Date,
+				deltaTime = ( now - GAME.counter.lastUpdate) / 1000;
+		// we diverge only miliseconds
+		if ( deltaTime > 1 ) deltaTime = 0;
 
-	// recover time now for use in the next frameset
-	GAME.counter.lastUpdate = now;
+		// recover time now for use in the next frameset
+		GAME.counter.lastUpdate = now;
 
-	// deltaTime is the fps counter range
-	Scene.addScenes[ Scene.currentScene ].act( deltaTime );
+		// deltaTime is the fps counter range
+		Scene.addScenes[ Scene.currentScene ].act( deltaTime );
+	}
 };
 
 var repaint = function (){
-	requestAnimFrame(repaint);
-	resizeBuffer(GAME.canvas.dom, GAME.canvas.ctx);
-	Scene.addScenes[ Scene.currentScene ].paint(GAME.canvas.ctx);
+	if( !GAME.player.winner ){
+		requestAnimFrame(repaint);
+		resizeBuffer(GAME.canvas.dom, GAME.canvas.ctx);
+		Scene.addScenes[ Scene.currentScene ].paint(GAME.canvas.ctx);
+	} else { //WINNER GAME
+		window.alert('GOTCHA !!! finally we will Dominate the Galaxy');
+		document.location.href = 'https://github.com/fernandoPalaciosGit';
+	}
 };
 
 var loadDefaulInteraction = function (){

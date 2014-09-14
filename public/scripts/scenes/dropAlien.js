@@ -59,7 +59,7 @@
 		if( !GAME.pause ){
 			// WIN : all draggable aliens are inside the hole
 			if( aliens.draggables.length === 0 ){
-				alert('Wiiiin');
+				loadScene( GAME.scenes.runAwayAlien );
 			}
 
 			GAME.counter.time -= countFPS;
@@ -193,7 +193,7 @@
 			if( !!GAME.gameover ){
 				ctx.fillText('Game over: click enter to reset', pausePosX, pausePosY);
 			} else {
-				ctx.fillText('Reaches 20 points to pass the level', pausePosX, pausePosY);
+				ctx.fillText('Drags the aliens to the hole', pausePosX, pausePosY);
 				ctx.fillText('Enter to Start', pausePosX, pausePosY + 40);
 			}
 
