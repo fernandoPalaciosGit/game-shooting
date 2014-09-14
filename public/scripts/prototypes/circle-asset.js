@@ -113,3 +113,20 @@ CircleAsset.prototype.distanceToTarget = function (target) {
 		return distance;
 	}
 };
+
+CircleAsset.prototype.calcDistCuad = function (target) {
+	var	dx = this.posX - target.posX,
+			dy = this.posY - target.posY,
+			cuadr = null;
+	if( dx > 0 && dy > 0 ){ // first quad
+		return 1;
+	} else if (  dx < 0 && dy > 0  ){ // second quad
+		return 2;
+	} else if (   dx > 0 && dy < 0   ) { // third quad
+		return 3;
+	} else if (  dx < 0 && dy < 0  ) { // fourth quad
+		return 4;
+	} else if (  dx === 0 && dy === 0  ) { // same pos
+		return 0;
+	}
+};

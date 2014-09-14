@@ -29,12 +29,25 @@
 		aliens.draggables.length = 0; // reset alien draggables
 		for (var i = 0; i < 6; i++) {
 			aliens.draggables.push( new CircleAsset(0, 0, 20, 0) );
-			aliens.draggables[i].setRandomPosition( domCanvas.style );
+
+			var alienRender = aliens.draggables[i];
+			alienRender.setRandomPosition( domCanvas.style );
+
+			// avoid collision with hole
+			if( hole.distanceToTarget( alienRender ) < 0 ){
+				var quad = hole.calcDistCuad( alienRender );
+				if ( quad !== 0 ) { // not same position of hole (center canvas)
+					alienRender.posX += ( quad === 2 || quad === 4 ) ? + hole.radius : - hole.radius ;
+					alienRender.posY += ( quad === 1 || quad === 2 ) ? - hole.radius : + hole.radius ;
+				} else {
+					alienRender.setRandomPosition( domCanvas.style );					
+				}
+			}
 
 			// init scene with random alien face
-			aliens.draggables[i].sprite = aliens.asset[ i%2%2 ]; // green or yellow asset
-			aliens.draggables[i].randomY = random(4); // type of alien
-			aliens.draggables[i].randomX = aliens.inSight; // sprite not in target
+			alienRender.sprite = aliens.asset[ i%2%2 ]; // green or yellow asset
+			alienRender.randomY = random(4); // type of alien
+			alienRender.randomX = aliens.inSight; // sprite not in target
 		};
 
 	};
