@@ -4,7 +4,8 @@
 				sight,
 				click,
 				press,
-				spriteAlien ){
+				spriteAlien,
+				fireworks ){
 
 	GAME.scenes.shootTheTarget.load = function () {
 		// reset variables game
@@ -13,6 +14,7 @@
 		GAME.scenes.level = 0;
 		GAME.gameover = false;
 		GAME.pause = true;
+		fireworks.reloadSystem();
 
 		// center target
 		var	styleWidth = domCanvas.style.width,
@@ -22,7 +24,7 @@
 		sight.setPosition( parseInt(styleWidth, 10)/2, parseInt(styleHeight, 10)/2);
 
 		// init scene with random alien face
-		spriteAlien.ramdomY = random(4);
+		spriteAlien.randomY = random(4);
 
 		// random sprite Asset
 		spriteAlien.asset[2] = spriteAlien.asset[ random(2) ];
@@ -78,16 +80,23 @@
 					GAME.score++;
 					spriteAlien.asset[2] = spriteAlien.asset[ random(2) ];
 					target.playSound(GAME.sound.deadAlien);
-					spriteAlien.ramdomY = random(4); // [random assets position]
-					target.setRandomPosition( domCanvas );
+					spriteAlien.randomY = random(4); // [random assets position]
+
+					/* FIREWORKS
+					* 200 particles, 2 px radius */
+					fireworks.createParticles( 200, 2, sight.posX, sight.posY );
+					target.setRandomPosition( domCanvas ); // move alien
 
 				} else {
 					target.playSound(GAME.sound.shoot);
 				}
+
 				// reset status pressing and clicking
 				GAME.clicks.lastPress = null;
 				GAME.keys.lastPress = null ;		
 			}
+
+			fireworks.moveParticles( countFPS ); // always moving fireworks
 
 			// check ousite placed target (because resized window)
 			if( !!target.isOutSide( domCanvas ) ){
@@ -157,7 +166,8 @@
 			if( !!GAME.gameover ){
 				ctx.fillText('Game over: click enter to reset', pausePosX, pausePosY);
 			} else {
-				ctx.fillText('Paused: click to start', pausePosX, pausePosY);
+				ctx.fillText('Shoot the aliens', pausePosX, pausePosY);
+				ctx.fillText('Enter to Start', pausePosX, pausePosY + 40);
 			}
 
 		} else {
@@ -175,8 +185,11 @@
 			// draw target alien with sprites
 			target.strokeTarget(	ctx, 'rgba(255, 0, 0, 0.0)', 0, Math.PI*2, spriteAlien.asset[2],
 										// position and Dim of sprite alien
-										spriteAlien.randomX, (spriteAlien.ramdomY * 100) + 30, 50, 50);
+										spriteAlien.randomX, (spriteAlien.randomY * 100) + 30, 50, 50);
 			
+			// firework sistem
+			fireworks.renderSystem(ctx);
+
 			// draw circle moved by mouse
 			sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
 		}
@@ -191,5 +204,6 @@
 	GAME.player.sight,
 	GAME.clicks.allowed,
 	GAME.keys.allowed,
-	GAME.sprites.alien
+	GAME.sprites.alien,
+	GAME.player.firework
  ));

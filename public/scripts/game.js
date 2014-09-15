@@ -1,31 +1,17 @@
 var init = function ( evLoad ) {
-	//resize canvas to full screen
+	//FULL SCREEN CANVAS
 	setCanvasFullScreen(GAME.canvas.dom);
-
 	window.onresize = function () {
 		setCanvasFullScreen(GAME.canvas.dom);
 	};
 
-	// find mouse position offset canvas
-	document.addEventListener('mousemove', function(evMove){
-		// mouse pointer position inside canvas is our circle asset position
-		var	offsetXMouse = evMove.pageX - GAME.canvas.dom.offsetLeft,
-				offsetYMouse = evMove.pageY - GAME.canvas.dom.offsetTop;
+	// LOAD PLAYER EVENTS
+	loadDefaulInteraction();
+	// Mobiles action
+	if ( window.mobilecheck() )
+		{ loadMobileInteraction(); }
 
-		GAME.player.sight.movePosition(offsetXMouse, offsetYMouse);
-	}, false);
-
-	// find key press position
-	document.addEventListener('keydown', function(evKeyDown){
-		GAME.keys.lastPress = evKeyDown.which || evKeyDown.keyCode;
-	}, false);
-
-	// keep track mouse click event
-	GAME.canvas.dom.addEventListener('mousedown', function (evClick){
-		GAME.clicks.lastPress = evClick.which;
-	}, false);
-	
-	// load the sight nd target scene
+	// LOAD FIRST STAGE
 	loadScene(GAME.scenes.shootTheTarget);
 	
 	run();
@@ -41,17 +27,21 @@ var GAME = {
 	player: {
 		sight: new CircleAsset(0, 0, 7, 2.5),
 		target: new CircleAsset(0, 0, 20, 0),
-		hole: new CircleAsset(0, 0, 50, 0)
+		hole: new CircleAsset(0, 0, 50, 3.5),
+		firework: new ParticleSystem(),
+		winner: false
 	},
+	bombs: [],
+	bombTime: 0, // countdown to create new bomb
 	sound: {
 		shoot: (function(){
 			var sound = new Audio();
-			// sound.src = './assets/sounds/shot.mp3';
+			sound.src = './assets/sounds/shot.mp3';
 			return sound; 
 		}()),
 		deadAlien: (function(){
 			var sound = new Audio();
-			// sound.src = './assets/sounds/deadAlien.wav';
+			sound.src = './assets/sounds/deadAlien.wav';
 			return sound;
 		}()) 
 	},
@@ -78,16 +68,20 @@ var GAME = {
 			randomY: 0,
 			randomX: 0,
 			inSight: 960, // sprite position X, to be alien out of target
-			inTarget: 1020 // sprite position X, to be alien in target
+			inTarget: 1020, // sprite position X, to be alien in target
+			draggables : [],		// assets draggables in canvas
+			dragging : null		// asset we are now dragging
 		}
 	},
 	scenes: {
 		shootTheTarget: new Scene(),
 		dropTheAlien: new Scene(),
+		runAwayAlien: new Scene(),
 		level: 0
 	},
 	clicks: {
-		lastPress: null,
+		lastPress : null,		// when we hold down the mouse
+		lastRelease : null,	// when we drop the mouse
 		allowed: {
 			LEFT : 1,
 			CENTER: 2,
@@ -117,25 +111,77 @@ var loadScene = function (sn){
 };
 
 var run = function (){
-	window.setTimeout(run, 1000/50); //frames por segundo
+	if( !GAME.player.winner ){
+		window.setTimeout(run, 1000/50); //frames por segundo
 
-	/* deltaTime: milliseconds that have passed since the last frame*/
-	var	now = + new Date,
-			deltaTime = ( now - GAME.counter.lastUpdate) / 1000;
-	// we diverge only miliseconds
-	if ( deltaTime > 1 ) deltaTime = 0;
+		/* deltaTime: milliseconds that have passed since the last frame*/
+		var	now = + new Date,
+				deltaTime = ( now - GAME.counter.lastUpdate) / 1000;
+		// we diverge only miliseconds
+		if ( deltaTime > 1 ) deltaTime = 0;
 
-	// recover time now for use in the next frameset
-	GAME.counter.lastUpdate = now;
+		// recover time now for use in the next frameset
+		GAME.counter.lastUpdate = now;
 
-	// deltaTime is the fps counter range
-	Scene.addScenes[ Scene.currentScene ].act( deltaTime );
+		// deltaTime is the fps counter range
+		Scene.addScenes[ Scene.currentScene ].act( deltaTime );
+	}
 };
 
 var repaint = function (){
-	requestAnimFrame(repaint);
-	resizeBuffer(GAME.canvas.dom, GAME.canvas.ctx);
-	Scene.addScenes[ Scene.currentScene ].paint(GAME.canvas.ctx);
+	if( !GAME.player.winner ){
+		requestAnimFrame(repaint);
+		resizeBuffer(GAME.canvas.dom, GAME.canvas.ctx);
+		Scene.addScenes[ Scene.currentScene ].paint(GAME.canvas.ctx);
+	} else { //WINNER GAME
+		window.alert('GOTCHA !!! Finally we will Dominate the Galaxy');
+		document.location.href = 'https://github.com/fernandoPalaciosGit';
+	}
+};
+
+var loadDefaulInteraction = function (){
+	// find mouse position offset canvas
+	document.addEventListener('mousemove', function(evMove){
+		var	offsetXMouse = evMove.pageX - GAME.canvas.dom.offsetLeft,
+				offsetYMouse = evMove.pageY - GAME.canvas.dom.offsetTop;
+
+		GAME.player.sight.movePosition(offsetXMouse, offsetYMouse);
+	}, false);
+	
+	// find key press position
+	document.addEventListener('keydown', function(evKeyDown){
+		GAME.keys.lastPress = evKeyDown.which || evKeyDown.keyCode;
+	}, false);
+
+	// avoid dragging alien
+	document.addEventListener('mouseup', function (evClick){
+		GAME.clicks.lastRelease = evClick.which || evClick.keyCode;
+	}, false);
+
+	// keep track mouseup and mousedown click events 
+	GAME.canvas.dom.addEventListener('mousedown', function (evClick){
+		GAME.clicks.lastPress = evClick.which || evClick.keyCode ;
+	}, false);
+};
+
+var loadMobileInteraction = function (){
+	// double click finger pause game
+	$(document).on('doubletap', function(e){
+		GAME.keys.lastPress = 13;
+	});
+
+	// move pointer
+	$(GAME.canvas.dom).on('drag', function(evt){
+      GAME.clicks.lastPress=1;
+      mousex=evt.x-this.offsetLeft;
+      mousey=evt.y-this.offsetTop;
+      GAME.player.sight.movePosition(mousex, mousey);
+	});
+
+	// drop Alien
+	GAME.canvas.dom.addEventListener('touchend',function(evt){
+		GAME.clicks.lastRelease=1;
+	},false);
 };
 
 document.addEventListener('DOMContentLoaded', init, false);
