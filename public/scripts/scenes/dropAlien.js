@@ -4,7 +4,8 @@
 				hole,
 				click,
 				press,
-				aliens
+				aliens,
+				fireworks
 			){
 
 	GAME.scenes.dropTheAlien.load = function () {
@@ -81,6 +82,7 @@
 					alienRender.posX = hole.posX;
 					alienRender.posY = hole.posY;
 					if( alienRender.radius <= 0 ){ // remove from alien draggables
+						fireworks.createParticles( 200, 2, hole.posX, hole.posY ); // explotion particles
 						aliens.draggables.splice(i, 1);
 						len--;
 						continue;
@@ -109,6 +111,8 @@
 					alienRender.randomX = aliens.inSight; 					
 				}
 			};
+
+			fireworks.moveParticles( countFPS ); // always moving fireworks
 
 			// player is dragging something, change alien coords to mouse position
 			if ( aliens.dragging !== null ) {
@@ -211,6 +215,9 @@
 					.strokeTargetDraggables( ctx, 'rgba(255, 0, 0, 0.0)', 50, 50);
 			};
 
+			// firework sistem
+			fireworks.renderSystem(ctx);
+
 			// draw pointer moved by mouse
 			sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
 		}
@@ -225,5 +232,6 @@
 	GAME.player.hole,
 	GAME.clicks.allowed,
 	GAME.keys.allowed,
-	GAME.sprites.alien
+	GAME.sprites.alien,
+	GAME.player.firework
 ));

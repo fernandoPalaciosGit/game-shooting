@@ -2,7 +2,9 @@
 				bgColor,
 				sight,
 				press,
-				spriteAlien ){
+				spriteAlien,
+				fireworks
+			){
 
 	GAME.scenes.runAwayAlien.load = function () {
 		// reset variables game
@@ -50,6 +52,7 @@
 			for (var i = 0, len = GAME.bombs.length; i < len; i++) {
 				if( GAME.bombs[i].bTimer < 0 ){ // remove alien from bombs assets
 					GAME.score++;
+					fireworks.createParticles( 200, 2, GAME.bombs[i].posX, GAME.bombs[i].posY );
 					GAME.bombs.splice(i--, 1);
 					len--;
 					continue; // no more interaction with this alien
@@ -79,6 +82,8 @@
 					}
 				}
 			};
+
+			fireworks.moveParticles( countFPS ); // always moving fireworks
 
 
 		// the game is paused and conditions for return playing
@@ -154,6 +159,9 @@
 				}
 			};
 
+			// firework sistem
+			fireworks.renderSystem(ctx);
+
 			// draw circle moved by mouse
 			sight.strokeSight(ctx, '#009B00', 0, Math.PI*2);
 		}
@@ -166,5 +174,6 @@
 	GAME.canvas.bgColor,
 	GAME.player.sight,
 	GAME.keys.allowed,
-	GAME.sprites.alien
+	GAME.sprites.alien,
+	GAME.player.firework
  ));
