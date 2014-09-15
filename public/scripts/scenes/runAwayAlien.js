@@ -15,6 +15,7 @@
 		GAME.pause = true; // timeout to explote bombs
 		GAME.bombTime = 0;
 		GAME.bombs.length = 0;
+		fireworks.reloadSystem();
 
 		// center position
 		var	styleWidth = domCanvas.style.width,

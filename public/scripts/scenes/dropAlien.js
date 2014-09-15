@@ -18,6 +18,7 @@
 		GAME.clicks.lastPress = null;
 		GAME.clicks.lastRelease = null;
 		aliens.dragging = null;
+		fireworks.reloadSystem();
 
 		// center the hole to drop the alien
 		var	middleWidth = parseInt(domCanvas.style.width, 10)/2,

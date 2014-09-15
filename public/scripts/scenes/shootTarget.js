@@ -14,6 +14,7 @@
 		GAME.scenes.level = 0;
 		GAME.gameover = false;
 		GAME.pause = true;
+		fireworks.reloadSystem();
 
 		// center target
 		var	styleWidth = domCanvas.style.width,

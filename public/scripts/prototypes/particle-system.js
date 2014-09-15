@@ -2,6 +2,10 @@ var ParticleSystem = function (){ };
 
 ParticleSystem.system = []; // set of particles constructor
 
+ParticleSystem.prototype.reloadSystem = function (){
+	this.constructor.system.length = 0;
+};
+
 ParticleSystem.prototype.renderSystem = function (ctx){
 	var particleSys = this.constructor.system;
 	for (var i = 0, len = particleSys.length; i < len; i++) {
