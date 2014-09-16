@@ -67,3 +67,8 @@ window.mobilecheck = function() {
 var toRad = function ( degree ){
 	return (degree * Math.PI)/180;
 }
+
+var playSound = function(sound){
+	GAME.sound.load( sound );
+	GAME.sound.play( sound )
+};

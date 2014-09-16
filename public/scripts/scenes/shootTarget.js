@@ -79,7 +79,7 @@
 				if ( distanceToTarget < 0 ) {
 					GAME.score++;
 					spriteAlien.asset[2] = spriteAlien.asset[ random(2) ];
-					target.playSound(GAME.sound.deadAlien);
+					playSound( 'deadAlien' );
 					spriteAlien.randomY = random(4); // [random assets position]
 
 					/* FIREWORKS
@@ -88,7 +88,7 @@
 					target.setRandomPosition( domCanvas ); // move alien
 
 				} else {
-					target.playSound(GAME.sound.shoot);
+					playSound( 'shoot' );
 				}
 
 				// reset status pressing and clicking

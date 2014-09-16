@@ -42,11 +42,6 @@ var CircleAsset = function (x, y, r, c) {
 	};
 };
 
-CircleAsset.prototype.playSound = function(sound){
-	sound.load();
-	sound.play();
-};
-
 CircleAsset.prototype.isOutSide = function (domCanvas){
  	return ( this.posX < 0 || this.posY > domCanvas.height ||
  				this.posX > domCanvas.width || this.posY < 0 );

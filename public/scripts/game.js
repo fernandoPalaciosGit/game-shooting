@@ -33,18 +33,14 @@ var GAME = {
 	},
 	bombs: [],
 	bombTime: 0, // countdown to create new bomb
-	sound: {
-		shoot: (function(){
-			var sound = new Audio();
-			sound.src = './assets/sounds/shot.mp3';
-			return sound; 
-		}()),
-		deadAlien: (function(){
-			var sound = new Audio();
-			sound.src = './assets/sounds/deadAlien.wav';
-			return sound;
-		}()) 
-	},
+	sound : new Howl( { 	// IMPLEMENT HOWLER SPRITES
+			urls: ['./assets/sounds/spriteGameSound.mp3'],
+			sprite: {
+				deadAlien: [100, 1400],
+				shoot: [1900, 2100]
+			},
+			volume: 0.2
+			} ),
 	sprites: {
 		alien: {
 			asset: [ ( function(){

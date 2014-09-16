@@ -84,6 +84,7 @@
 					alienRender.posY = hole.posY;
 					if( alienRender.radius <= 0 ){ // remove from alien draggables
 						fireworks.createParticles( 200, 2, hole.posX, hole.posY ); // explotion particles
+						playSound( 'deadAlien' );
 						aliens.draggables.splice(i, 1);
 						len--;
 						continue;
@@ -178,8 +179,7 @@
 				// text info bgdColor
 		var	colorBgdTxt = '#6BE',
 				colorFontTxt = '#000',
-				// show score
-				txt = 'Score: '+ GAME.score;
+				txt =  aliens.draggables.length + ' left';
 
 		drawBgdTxt(ctx, txt, 'left', '14pt', domCanvas.width-100, 20, colorBgdTxt, colorFontTxt);
 		

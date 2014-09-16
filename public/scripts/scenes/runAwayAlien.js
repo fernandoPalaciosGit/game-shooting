@@ -54,6 +54,7 @@
 				if( GAME.bombs[i].bTimer < 0 ){ // remove alien from bombs assets
 					GAME.score++;
 					fireworks.createParticles( 200, 2, GAME.bombs[i].posX, GAME.bombs[i].posY );
+					playSound( 'deadAlien' );
 					GAME.bombs.splice(i--, 1);
 					len--;
 					continue; // no more interaction with this alien
